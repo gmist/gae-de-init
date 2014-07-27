@@ -12,5 +12,6 @@ main/lib.zip
 main/static/dst
 main/static/ext
 main/static/min
+main/static/src/style/signin_buttons_style.less
 node_modules
 temp/

@@ -27,7 +27,8 @@ def signin():
   for provider in PROVIDERS_CONFIG:
     name = provider.get('name')
     has_fields = True
-    for field in provider.get('fields', {}).iterkeys():
+    for field in provider.get('key_fields', {}).iterkeys():
+      print hasattr(auth_db, field)
       if not hasattr(auth_db, field) or not getattr(auth_db, field):
         has_fields = False
 
