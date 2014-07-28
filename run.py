@@ -182,21 +182,7 @@ def compile_script(source, target_dir):
   os_execute(FILE_COFFEE, '-cp', source, target)
 
 
-def import_signin_buttons_style():
-  remove_file_dir('main/static/src/style/signin_buttons_style.less')
-  for root, _, files in os.walk('main/apps/auth/providers'):
-    for filename in files:
-      if filename.endswith('.less'):
-        with open('main/static/src/style/signin_buttons_style.less', 'a') as less_file:
-          less_file.write(
-              '@import "../../../../%s";' % os.path.join(
-                  root, os.path.splitext(filename)[0])
-            )
-          less_file.write(os.linesep)
-
-
 def compile_style(source, target_dir, check_modified=False):
-  import_signin_buttons_style()
   if not os.path.isfile(source):
     print_out('NOT FOUND', source)
     return
