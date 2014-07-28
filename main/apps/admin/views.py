@@ -40,10 +40,10 @@ def config_update():
   if form.validate_on_submit():
     provider_fields = []
     for provider in auth_providers_cfg:
-      for field in provider.get('fields', {}).keys():
+      for field in provider.get('key_fields', {}).iterkeys():
         if field:
           provider_fields.append(field)
-    for name, field in form._fields.iteritems():
+    for name, field in auth_form._fields.iteritems():
       if name and name in provider_fields:
         setattr(auth_db, name, field.data)
     auth_db.put()
