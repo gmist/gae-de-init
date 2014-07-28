@@ -1,0 +1,10 @@
+{{
+  forms.oauth_fields(
+      'Instagram',
+      (auth_form.instagram_client_id, auth_form.instagram_client_secret),
+      '''
+        Redirect URI for <a href="http://instagram.com/developer/clients/manage/" target="_blank">Instagram application</a>:
+        <em>%s</em>
+      ''' % url_for('auth.instagram.service.authorized', _external=True)
+    )
+}}
