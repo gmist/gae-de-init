@@ -3,6 +3,7 @@ import re
 from google.appengine.ext import ndb
 from flask.ext import login
 import flask
+import unidecode
 
 from apps.auth.models import FlaskUser
 from apps.user import models
@@ -12,7 +13,8 @@ import config
 
 
 def create_user_db(auth_id, name, username, email='', **params):
-  username = re.sub(r'_+|-+|\s+', '.', username.split('@')[0].lower().strip())
+  username = unidecode.unidecode(username.split('@')[0].lower()).strip()
+  username = re.sub(r'[\W_]+', '.', username)
   new_username = username
   n = 1
   while not models.User.is_username_available(new_username):

@@ -1,7 +1,6 @@
 # coding: utf-8
 from flask.ext import oauth
 import flask
-import unidecode
 
 from apps.auth import helpers
 from apps.auth.models import AuthProviders
@@ -76,5 +75,5 @@ def retrieve_user_from_instagram(response):
   return helpers.create_user_db(
       auth_id,
       response['full_name'] or response['username'],
-      unidecode.unidecode(response['username']),
+      response['username'],
     )
