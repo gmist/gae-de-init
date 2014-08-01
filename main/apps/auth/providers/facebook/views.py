@@ -72,6 +72,6 @@ def retrieve_user_from_facebook(response):
   return helpers.create_user_db(
       auth_id,
       response['name'],
-      response['name'],
+      response.get('username', response['name']),
       response.get('email', ''),
     )
