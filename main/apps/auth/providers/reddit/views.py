@@ -31,7 +31,7 @@ bps = flask.Blueprint(
 provider_oauth = oauth.OAuth()
 
 provider = provider_oauth.remote_app(
-    'reddit',
+    PROVIDER_NAME,
     base_url='https://oauth.reddit.com/api/v1/',
     request_token_url=None,
     access_token_url='https://ssl.reddit.com/api/v1/access_token',

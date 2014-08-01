@@ -29,7 +29,7 @@ bps = flask.Blueprint(
 provider_oauth = oauth.OAuth()
 
 provider = provider_oauth.remote_app(
-    'linkedin',
+    PROVIDER_NAME,
     base_url='https://api.linkedin.com/v1/',
     request_token_url=None,
     access_token_url='https://www.linkedin.com/uas/oauth2/accessToken',
