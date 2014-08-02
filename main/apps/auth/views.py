@@ -24,6 +24,7 @@ def signin():
 
   signin_urls = {}
   auth_db = models.AuthProviders.get_master_db()
+  auth_providers = []
   for provider in PROVIDERS_CONFIG:
     name = provider.get('name')
     has_fields = True
@@ -32,16 +33,17 @@ def signin():
         has_fields = False
 
     if name and has_fields:
-      signin_urls[name] = {
-          'template_signin': provider.get('template_signin'),
-          'signin_url': flask.url_for('auth.%s.signin' % name, next=next_url)
-        }
+      auth_providers.append(provider)
+      # signin_urls[name] = {
+      #     'template_signin': provider.get('template_signin'),
+      #     'signin_url': flask.url_for('auth.%s.signin' % name, next=next_url)
+      #   }
 
   return flask.render_template(
       'auth/signin.html',
       title='Please sign in',
       html_class='signin',
-      auth_providers=signin_urls,
+      auth_providers=auth_providers,
       next_url=next_url,
     )
 
