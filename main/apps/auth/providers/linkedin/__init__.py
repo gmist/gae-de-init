@@ -7,6 +7,4 @@ CONFIG = {
         'linkedin_api_key': 'API Key',
         'linkedin_secret_key': 'Secret Key',
       },
-    'template_admin': 'auth/providers/linkedin/admin_config.html',
-    'template_signin': 'auth/providers/linkedin/signin.html',
   }

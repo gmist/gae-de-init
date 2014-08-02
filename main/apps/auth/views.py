@@ -22,7 +22,6 @@ def signin():
   if flask.url_for('auth.signin') in next_url:
     next_url = flask.url_for('pages.welcome')
 
-  signin_urls = {}
   auth_db = models.AuthProviders.get_master_db()
   auth_providers = []
   for provider in PROVIDERS_CONFIG:

@@ -33,9 +33,7 @@
         <legend>Auth keys</legend>
         <div class="panel-group" id="oauth">
           # for provider in auth_providers
-            # if provider.template_admin
-              # include provider.template_admin
-            # endif
+            # include "auth/providers/" + provider.name + "/admin_config.html" ignore missing
           # endfor
         </div>
         <legend>Other keys</legend>

@@ -6,6 +6,4 @@ CONFIG = {
         'facebook_app_id': 'App ID',
         'facebook_app_secret': 'App Secret',
       },
-    'template_admin': 'auth/providers/facebook/admin_config.html',
-    'template_signin': 'auth/providers/facebook/signin.html',
   }
