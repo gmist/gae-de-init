@@ -9,4 +9,3 @@ CONFIG = {
     'template_admin': 'auth/providers/dropbox/admin_config.html',
     'template_signin': 'auth/providers/dropbox/signin.html',
   }
-

@@ -61,7 +61,7 @@ def get_vk_oauth_token():
 def signin():
   helpers.save_request_params()
   return vk.authorize(callback=flask.url_for(
-      'auth.vk.service.authorized', _external=True
+      'auth.%s.service.authorized' % PROVIDER_NAME, _external=True
     ))
 
 

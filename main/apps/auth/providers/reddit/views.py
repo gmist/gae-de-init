@@ -98,7 +98,7 @@ def get_reddit_oauth_token():
 def signin():
   helpers.save_request_params()
   return provider.authorize(callback=flask.url_for(
-      'auth.reddit.service.authorized', _external=True
+      'auth.%s.service.authorized' % PROVIDER_NAME, _external=True
     ))
 
 

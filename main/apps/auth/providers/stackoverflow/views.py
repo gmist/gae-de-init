@@ -79,7 +79,7 @@ def signin():
   flask.session['oauth_token'] = None
   helpers.save_request_params()
   return provider.authorize(callback=flask.url_for(
-      'auth.stackoverflow.service.authorized', _external=True
+      'auth.%s.service.authorized' % PROVIDER_NAME, _external=True
     ))
 
 

@@ -84,7 +84,7 @@ def signin():
   flask.session['access_token'] = None
   helpers.save_request_params()
   return provider.authorize(callback=flask.url_for(
-      'linkedin_authorized', _external=True
+      'auth.%s.service.authorized' % PROVIDER_NAME, _external=True
     ))
 
 

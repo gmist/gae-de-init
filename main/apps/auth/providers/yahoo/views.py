@@ -80,7 +80,7 @@ def signin():
   flask.session.pop('oauth_token', None)
   try:
     return yahoo.authorize(
-        callback=flask.url_for('auth.yahoo.service.authorized')
+        callback=flask.url_for('auth.%s.service.authorized' % PROVIDER_NAME)
       )
   except:
     flask.flash(
