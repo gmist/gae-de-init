@@ -1,5 +1,7 @@
 # macro signin_button(provider)
-  <a class="btn btn-block btn-lg btn-social btn-{{ provider.name }}" href="{{provider.signin_url}}" rel="nofollow">
+  <a class="btn btn-block btn-lg btn-social btn-{{ provider.name }}"
+     href="{{ provider.signin_url }}"
+     rel="nofollow">
     <i class="fa
       # if provider.icon_class
         {{ provider.icon_class }}

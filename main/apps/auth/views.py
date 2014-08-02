@@ -33,11 +33,8 @@ def signin():
         has_fields = False
 
     if name and has_fields:
+      provider['signin_url'] = flask.url_for('auth.%s.signin' % name, next=next_url)
       auth_providers.append(provider)
-      # signin_urls[name] = {
-      #     'template_signin': provider.get('template_signin'),
-      #     'signin_url': flask.url_for('auth.%s.signin' % name, next=next_url)
-      #   }
 
   return flask.render_template(
       'auth/signin.html',
