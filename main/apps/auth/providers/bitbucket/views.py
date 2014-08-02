@@ -23,9 +23,11 @@ bps = flask.Blueprint(
     __name__,
     url_prefix='/_s/callback/%s' % PROVIDER_NAME,
   )
-bitbucket_oauth = oauth.OAuth()
 
-bitbucket = bitbucket_oauth.remote_app(
+
+provider_oauth = oauth.OAuth()
+
+provider = provider_oauth.remote_app(
     'bitbucket',
     base_url='https://api.bitbucket.org/1.0/',
     request_token_url='https://bitbucket.org/!api/1.0/oauth/request_token',
@@ -37,19 +39,19 @@ bitbucket = bitbucket_oauth.remote_app(
 
 
 @bps.route('/oauth-authorized/')
-@bitbucket.authorized_handler
+@provider.authorized_handler
 def authorized(resp):
   if resp is None:
     return 'Access denied'
   flask.session['oauth_token'] = (
       resp['oauth_token'], resp['oauth_token_secret'],
     )
-  me = bitbucket.get('user')
+  me = provider.get('user')
   user_db = retrieve_user_from_bitbucket(me.data['user'])
   return helpers.signin_user_db(user_db)
 
 
-@bitbucket.tokengetter
+@provider.tokengetter
 def get_bitbucket_oauth_token():
   return flask.session.get('oauth_token')
 
@@ -58,7 +60,7 @@ def get_bitbucket_oauth_token():
 def signin():
   flask.session['oauth_token'] = None
   helpers.save_request_params()
-  return bitbucket.authorize(callback=flask.url_for(
+  return provider.authorize(callback=flask.url_for(
       'auth.%s.service.authorized' % PROVIDER_NAME, _external=True
     ))
 
