@@ -1,0 +1,17 @@
+# macro signin_button(provider)
+  <a class="btn btn-block btn-lg btn-social btn-{{ provider.name }}" href="{{provider.signin_url}}" rel="nofollow">
+    <i class="fa
+      # if provider.icon_class
+        {{ provider.icon_class }}
+      # else
+        fa-{{ provider.name }}
+      #endif
+      "></i>
+    Sign in with
+    # if provider.title
+    {{ provider.title }}
+    # else
+    {{ provider.name | capitalize }}
+    # endif
+  </a>
+# endmacro
