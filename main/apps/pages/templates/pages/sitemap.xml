@@ -8,7 +8,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>{{host_url}}{{url_for('pages.feedback')}}</loc>
+    <loc>{{host_url}}{{url_for('feedback.index')}}</loc>
     <lastmod>{{lastmod}}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
