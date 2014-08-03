@@ -25,6 +25,12 @@ bps = flask.Blueprint(
   )
 
 
+@bp.route('/')
+@auth.admin_required
+def index():
+  return flask.render_template('admin/index.html')
+
+
 @bps.route('/config/')
 @bp.route('/config/', methods=['GET', 'POST'])
 @auth.admin_required
@@ -69,7 +75,7 @@ def config_update():
 
   return flask.render_template(
       'admin/config_update.html',
-      title='Admin Config',
+      title='App Config',
       html_class='admin-config',
       form=form,
       auth_form=auth_form,

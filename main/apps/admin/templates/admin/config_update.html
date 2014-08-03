@@ -3,7 +3,12 @@
 
 # block content
   <div class="page-header">
-    <h1>{{title}}</h1>
+    <h1>
+      <small>
+        <a href="{{url_for('admin.index')}}" class="text-muted" title="Back to admin page"><i class="fa fa-fw fa-chevron-left"></i></a>
+      </small>
+      {{title}}
+    </h1>
     <p class="help-block">
       For most of the settings to be applied for everyone, you will
       # if instances_url

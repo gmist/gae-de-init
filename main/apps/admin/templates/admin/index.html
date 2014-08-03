@@ -1,0 +1,28 @@
+# extends 'base.html'
+# import 'macro/forms.html' as forms
+
+# block content
+
+  <div class="page-header">
+    <h1>Admin</h1>
+  </div>
+  <div class="row">
+    <ul class="nav nav-justified">
+      <li>
+        <a class="text-center"
+           href="{{ url_for('admin.config_update') }}">
+          <i class="fa fa-cog fa-5x"></i><br>
+          App Config
+        </a>
+      </li>
+      <li>
+        <a class="text-center"
+           href="{{ url_for('user.list', order='-modified', active=True) }}">
+          <i class="fa fa-users fa-5x"></i><br>
+          User List
+        </a>
+      </li>
+    </ul>
+  </div>
+
+# endblock
