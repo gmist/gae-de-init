@@ -1,7 +1,8 @@
+# import 'macro/forms.html' as forms
 {{
   forms.oauth_fields(
       'Twitter',
-      (auth_form.twitter_consumer_key, auth_form.twitter_consumer_secret),
+      (form.twitter_consumer_key, form.twitter_consumer_secret),
       '''
         Callback URL for <a href="https://dev.twitter.com/apps" target="_blank">Twitter application</a>:
         <em>%s</em>

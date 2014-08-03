@@ -1,6 +1,7 @@
+# import 'macro/forms.html' as forms
 {{
   forms.oauth_fields(
       'Bitbucket',
-      (auth_form.bitbucket_key, auth_form.bitbucket_secret)
+      (form.bitbucket_key, form.bitbucket_secret)
     )
 }}

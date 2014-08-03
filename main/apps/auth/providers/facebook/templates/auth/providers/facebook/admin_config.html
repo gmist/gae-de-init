@@ -1,7 +1,8 @@
+# import 'macro/forms.html' as forms
 {{
   forms.oauth_fields(
       'Facebook',
-      (auth_form.facebook_app_id, auth_form.facebook_app_secret),
+      (form.facebook_app_id, form.facebook_app_secret),
       '''
         Site URL for <a href="https://developers.facebook.com/apps" target="_blank">Facebook application</a>:
         <em>%s</em>

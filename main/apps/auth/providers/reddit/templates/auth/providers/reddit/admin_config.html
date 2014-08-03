@@ -1,7 +1,8 @@
+# import 'macro/forms.html' as forms
 {{
   forms.oauth_fields(
       'Reddit',
-      (auth_form.reddit_client_id, auth_form.reddit_client_secret),
+      (form.reddit_client_id, form.reddit_client_secret),
       '''
         Redirect URL for <a href="https://ssl.reddit.com/prefs/apps/" target="_blank">Reddit application</a>:
         <em>%s</em>

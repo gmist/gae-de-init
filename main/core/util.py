@@ -237,6 +237,9 @@ def update_query_argument(name, value=None, ignore='cursor', is_list=False):
 def register_apps(app):
   for pkg in werk_utils.find_modules('apps', True):
     pkg_views = '%s.views' % pkg
+    bpa = werk_utils.import_string('%s.bpa' % pkg_views, True)
+    if bpa:
+      app.register_blueprint(bpa)
     bp = werk_utils.import_string('%s.bp' % pkg_views, True)
     if bp:
       app.register_blueprint(bp)

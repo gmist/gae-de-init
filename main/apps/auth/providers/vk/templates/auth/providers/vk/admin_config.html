@@ -1,7 +1,8 @@
+# import 'macro/forms.html' as forms
 {{
   forms.oauth_fields(
       'VK',
-      (auth_form.vk_app_id, auth_form.vk_app_secret),
+      (form.vk_app_id, form.vk_app_secret),
       '''
         <a href="http://vk.com/editapp?act=create" target="_blank">Register</a> an application or
         <a href="http://vk.com/apps?act=manage" target="_blank">manage</a> the existing ones on

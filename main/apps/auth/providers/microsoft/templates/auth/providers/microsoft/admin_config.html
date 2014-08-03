@@ -1,7 +1,8 @@
+# import 'macro/forms.html' as forms
 {{
   forms.oauth_fields(
       'Microsoft',
-      (auth_form.microsoft_client_id, auth_form.microsoft_client_secret),
+      (form.microsoft_client_id, form.microsoft_client_secret),
       '''
         Redirect domain for <a href="https://account.live.com/developers/applications" target="_blank">Microsoft Accounts</a>:
         <em>%s</em>

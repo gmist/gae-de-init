@@ -1,0 +1,43 @@
+# extends 'base.html'
+
+# block content
+<div class="page-header">
+  <h1>
+    <small>
+      <a href="{{url_for('admin.index')}}" class="text-muted" title="Back to admin page"><i class="fa fa-fw fa-chevron-left"></i></a>
+    </small>
+    {{title}}
+  </h1>
+  <p class="help-block">
+    For most of the settings to be applied for everyone, you will
+    # if instances_url
+    <a href="{{instances_url}}" target="_blank">have to restart</a>
+    # else
+    have to restart
+    # endif
+    the <a href="https://developers.google.com/appengine/docs/adminconsole/instances" target="_blank" >instances</a>.
+  </p>
+</div>
+
+<form method="POST" action="" novalidate>
+  <div class="row">
+    <fieldset class="col-sm-6 col-md-7">
+      <legend>Auth keys</legend>
+      {{form.csrf_token}}
+      <div class="panel-group" id="oauth">
+        # for provider in auth_providers
+          # include "auth/providers/" + provider.name + "/admin_config.html" ignore missing
+        # endfor
+      </div>
+    </fieldset>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <button type="submit" class="btn btn-primary btn-lg btn-block btn-loading" data-loading-text="Updating Config..">
+        Update Config
+      </button>
+    </div>
+  </div>
+</form>
+# endblock

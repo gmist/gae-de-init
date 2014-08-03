@@ -35,12 +35,6 @@
       </fieldset>
 
       <fieldset class="col-sm-6 col-md-7">
-        <legend>Auth keys</legend>
-        <div class="panel-group" id="oauth">
-          # for provider in auth_providers
-            # include "auth/providers/" + provider.name + "/admin_config.html" ignore missing
-          # endfor
-        </div>
         <legend>Other keys</legend>
         <div class="panel-group" id="keys">
           # include "admin/bit/flask_secret_key.html"

@@ -17,6 +17,13 @@
       </li>
       <li>
         <a class="text-center"
+           href="{{ url_for('auth.admin.index') }}">
+          <i class="fa fa-lock fa-5x"></i><br>
+          Auth Config
+        </a>
+      </li>
+      <li>
+        <a class="text-center"
            href="{{ url_for('user.list', order='-modified', active=True) }}">
           <i class="fa fa-users fa-5x"></i><br>
           User List

@@ -2,10 +2,19 @@
 from flask.ext import login
 import flask
 
+from apps import auth
 from apps.auth import PROVIDERS_CONFIG
+from apps.auth import forms
 from apps.auth import models
 from core import util
 
+
+bpa = flask.Blueprint(
+    'auth.admin',
+    __name__,
+    url_prefix='/admin/auth',
+    template_folder='templates'
+  )
 
 bp = flask.Blueprint(
     'auth',
@@ -14,6 +23,29 @@ bp = flask.Blueprint(
     template_folder='templates',
   )
 
+@bpa.route('/', methods=['GET', 'POST'], endpoint='index')
+@auth.admin_required
+def admin_index():
+  auth_db = models.AuthProviders.get_master_db()
+  auth_providers = auth.PROVIDERS_CONFIG
+  form = forms.AuthProvidersForm.append_providers(
+      auth_providers)(obj=auth_db)
+  if form.validate_on_submit():
+    for provider in auth_providers:
+      for field in provider.get('key_fields', {}).iterkeys():
+        try:
+          getattr(auth_db, field)
+        except AttributeError:
+          setattr(auth_db, field, '')
+    form.populate_obj(auth_db)
+    auth_db.put()
+    return flask.redirect(flask.url_for('admin.index'))
+  return flask.render_template(
+      'auth/admin/index.html',
+      title='Auth Config',
+      form=form,
+      auth_providers=auth_providers,
+    )
 
 @bp.route('/login/')
 @bp.route('/signin/')
