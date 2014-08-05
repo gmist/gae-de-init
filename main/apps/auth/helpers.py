@@ -43,7 +43,7 @@ def save_request_params():
 @ndb.toplevel
 def signin_user_db(user_db):
   if not user_db:
-    return flask.redirect(flask.url_for('signin'))
+    return flask.redirect(flask.url_for('auth.signin'))
   flask_user_db = FlaskUser(user_db)
   auth_params = flask.session.get('auth-params', {
       'next': flask.url_for('pages.welcome'),
@@ -56,4 +56,4 @@ def signin_user_db(user_db):
       ), category='success')
     return flask.redirect(auth_params['next'])
   flask.flash('Sorry, but you could not sign in.', category='danger')
-  return flask.redirect(flask.url_for('signin'))
+  return flask.redirect(flask.url_for('auth.signin'))
