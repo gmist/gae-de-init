@@ -42,13 +42,14 @@ def get_referrer_url():
   return None
 
 
-def get_next_url(option_url=None):
+def get_next_url(option_url=None, skip_referrer=False):
   next_url = param('next')
   if next_url:
     return next_url
-  referrer = get_referrer_url()
-  if referrer:
-    return referrer
+  if not skip_referrer:
+    referrer = get_referrer_url()
+    if referrer:
+      return referrer
   if option_url:
     return option_url
   return flask.url_for('pages.welcome')
