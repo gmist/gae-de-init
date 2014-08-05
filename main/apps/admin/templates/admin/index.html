@@ -29,6 +29,13 @@
           User List
         </a>
       </li>
+      <li>
+        <a class="text-center"
+           href="{{ url_for('feedback.admin.list', order='-created', is_read=False) }}">
+          <i class="fa fa-comment fa-5x"></i><br>
+          Feedback List
+        </a>
+      </li>
     </ul>
   </div>
 

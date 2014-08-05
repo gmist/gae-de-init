@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 from core import util
 import config
 
+
 class Base(ndb.Model):
   created = ndb.DateTimeProperty(auto_now_add=True)
   modified = ndb.DateTimeProperty(auto_now=True)

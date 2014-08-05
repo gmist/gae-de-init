@@ -19,3 +19,8 @@ class FeedbackForm(wtf.Form):
       [wtf.validators.optional(), wtf.validators.email()],
       filters=[util.email_filter],
     )
+  comment = wtf.TextAreaField(
+      'Comment',
+      [wtf.validators.optional()],
+      filters=[util.strip_filter]
+    )

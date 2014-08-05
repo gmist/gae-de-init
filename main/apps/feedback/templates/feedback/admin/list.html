@@ -1,0 +1,101 @@
+# extends 'base.html'
+# import 'macro/utils.html' as utils
+
+# block head
+  {{utils.prefetch_link(next_url)}}
+# endblock
+
+# block content
+  <div class="page-header">
+    <h1>
+      <small>
+        <a href="{{url_for('admin.index')}}" class="text-muted" title="Back to admin page"><i class="fa fa-fw fa-chevron-left"></i></a>
+      </small>
+      {{title}}
+    </h1>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="btn-group btn-group-sm">
+        <button type="button" class="btn btn-success" disabled >Limit</button>
+        {{utils.filter_by_link('limit', 16)}}
+        {{utils.filter_by_link('limit', 64)}}
+        {{utils.filter_by_link('limit', 128)}}
+        {{utils.filter_by_link('limit', 512)}}
+        {{utils.filter_by_link('limit', 1024)}}
+      </div>
+
+      <div class="btn-group btn-group-sm">
+        <button type="button" class="btn btn-primary" disabled >Unread only</button>
+        {{utils.filter_by_link('is_read', False, 'thumbs-o-up')}}
+      </div>
+
+      <div id="feedback-actions" class="btn-group btn-group-sm hidden">
+        <button type="button" class="btn dropdown-toggle btn-info" data-toggle="dropdown">
+          More
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a id="feedback-delete"
+                data-service-url="{{url_for('feedback.service.delete')}}"
+                data-confirm="Are you sure you want to delete {feedbacks} selected feedback(s)?"
+                data-success="{feedbacks} feedback(s) deleted."
+                data-error="Something went wrong while deleting. Please try again."
+                href="#"
+              >
+              <i class="fa fa-fw fa-trash-o"></i>
+              Delete Selected
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warning alert-dismissable {{'hide' if feedback_dbs|count > 0}}">
+    <a href="{{url_for('feedback.admin.list', order='-modified')}}" class="close" title="Remove all filters">&times;</a>
+    There are no feedbacks matching the filters.
+  </div>
+
+  <div class="table-responsive {{'hide' if feedback_dbs|count == 0}}">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr class="text-nowrap">
+          <th class="col-xs-4"><input id="select-all" type="checkbox"> Title</th>
+          <th class="col-xs-2">{{utils.order_by_link('email', 'Email')}}</th>
+          <th class="col-xs-2">{{utils.order_by_link('created', 'Created')}}</th>
+          <th class="col-xs-1">{{utils.order_by_link('user', 'Username')}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        # for feedback_db in feedback_dbs
+          <tr id="{{feedback_db.key.urlsafe()}}" class="{{'text-muted' if feedback_db.is_read}}">
+            <td>
+              <input type="checkbox" name="feedback_db" value="{{feedback_db.key.urlsafe()}}">
+              <a href="{{url_for('feedback.admin.show', feedback_id=feedback_db.key.id())}}">{{feedback_db.subject}}</a>
+            </td>
+            <td>{{feedback_db.email}}</td>
+            <td>
+              <time datetime="{{feedback_db.created}}">
+                {{feedback_db.created.strftime('%Y-%m-%d')}}
+              </time>
+            </td>
+            <td>
+              # if feedback_db.user
+                <a href="{{url_for('user.update', user_id=feedback_db.user.id())}}" target="_blank">
+                  {{feedback_db.user.get().name}}
+                </a>
+              # else
+                Guest
+              # endif
+            </td>
+          </tr>
+        # endfor
+      </tbody>
+    </table>
+  </div>
+
+  {{utils.next_link(next_url)}}
+# endblock

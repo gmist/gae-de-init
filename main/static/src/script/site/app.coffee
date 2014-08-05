@@ -12,6 +12,9 @@ $ -> $('html.signin').each ->
 
 $ -> $('html.feedback').each ->
 
+$ -> $('html.feedback-list').each ->
+  init_feedback_list()
+
 $ -> $('html.user-list').each ->
   init_user_list()
 

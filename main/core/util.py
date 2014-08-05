@@ -90,6 +90,11 @@ def get_dbs(
   return list(model_dbs), next_cursor
 
 
+@ndb.transactional(xg=True)
+def delete_dbs(db_keys):
+  ndb.delete_multi(db_keys)
+
+
 ###############################################################################
 # JSON Response Helpers
 ###############################################################################

@@ -1,0 +1,42 @@
+# extends 'base.html'
+# import 'macro/forms.html' as forms
+# import 'macro/utils.html' as utils
+
+# block content
+  <div class="page-header">
+    <h1>
+      <small>
+        <a href="{{url_for('feedback.admin.list', order='-modified', is_read=False)}}" class="text-muted" title="Back to feedback list"><i class="fa fa-fw fa-chevron-left"></i></a>
+      </small>
+      {{title}}
+    </h1>
+  </div>
+  <form method="POST" action="" novalidate>
+    <div class="row">
+      <div class="col-md-5 col-sm-6">
+        {{ form.csrf_token }}
+        {{ forms.text_field(form.subject, readonly=1) }}
+        {{ forms.email_field(form.email, readonly=1) }}
+        {{ forms.textarea_field(form.message, rows=10, readonly=1) }}
+      </div>
+      <div class="col-md-7 col-sm-12">
+        {{ forms.textarea_field(form.comment, rows=17) }}
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <button type="submit" class="btn btn-primary btn-lg btn-block btn-loading" data-loading-text="Updating..">
+          Update
+        </button>
+        <div class="text-center">or</div>
+        # if form.email.data
+          <a href="mailto:{{ form.email.data }}?subject=Re: {{ form.subject.data }}&body=>{{ form.message.data }}"
+             class="btn btn-lg btn-block btn-info">
+            Reply by your default email client
+          </a>
+        # endif
+      </div>
+    </div>
+  </form>
+# endblock
