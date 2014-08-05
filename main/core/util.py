@@ -35,13 +35,22 @@ def param(name, cast=None):
   return value
 
 
-def get_next_url():
-  next_url = param('next')
-  if next_url:
-    return next_url
+def get_referrer_url():
   referrer = flask.request.referrer
   if referrer and referrer.startswith(flask.request.host_url):
     return referrer
+  return None
+
+
+def get_next_url(option_url=None):
+  next_url = param('next')
+  if next_url:
+    return next_url
+  referrer = get_referrer_url()
+  if referrer:
+    return referrer
+  if option_url:
+    return option_url
   return flask.url_for('pages.welcome')
 
 
