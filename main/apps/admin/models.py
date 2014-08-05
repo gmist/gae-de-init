@@ -16,6 +16,7 @@ class Config(base.Base):
   feedback_email = ndb.StringProperty(default='')
   flask_secret_key = ndb.StringProperty(default=util.uuid())
   notify_on_new_user = ndb.BooleanProperty(default=True)
+  yandex_metrika_counter_number = ndb.StringProperty(default='')
 
   _PROPERTIES = base.Base._PROPERTIES.union({
       'analytics_id',
@@ -25,6 +26,7 @@ class Config(base.Base):
       'feedback_email',
       'flask_secret_key',
       'notify_on_new_user',
+      'yandex_metrika_counter_number',
     })
 
   @classmethod

@@ -35,10 +35,14 @@
       </fieldset>
 
       <fieldset class="col-sm-6 col-md-7">
+        <legend>Web analytics</legend>
+        <div class="panel-group" id="keys">
+          # include "admin/bit/google_analytics_tracking_id.html"
+          # include "admin/bit/yandex_metrika_counter_number.html"
+        </div>
         <legend>Other keys</legend>
         <div class="panel-group" id="keys">
           # include "admin/bit/flask_secret_key.html"
-          # include "admin/bit/google_analytics_tracking_id.html"
         </div>
       </fieldset>
     </div>
