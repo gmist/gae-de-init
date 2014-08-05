@@ -24,9 +24,9 @@ bps = flask.Blueprint(
     url_prefix='/_s/callback/%s' % PROVIDER_NAME,
   )
 
-vk_oauth = oauth.OAuth()
+provider_oauth = oauth.OAuth()
 
-vk = vk_oauth.remote_app(
+provider = provider_oauth.remote_app(
     'vk',
     base_url='https://api.vk.com/',
     request_token_url=None,
@@ -38,7 +38,7 @@ vk = vk_oauth.remote_app(
 
 
 @bps.route('/oauth-authorized/')
-@vk.authorized_handler
+@provider.authorized_handler
 def authorized(resp):
   if resp is None:
     return 'Access denied: error=%s error_description=%s' % (
@@ -47,12 +47,12 @@ def authorized(resp):
       )
   access_token = resp['access_token']
   flask.session['oauth_token'] = (access_token, '')
-  me = vk.get('/method/getUserInfoEx', data={'access_token': access_token})
+  me = provider.get('/method/getUserInfoEx', data={'access_token': access_token})
   user_db = retrieve_user_from_vk(me.data['response'])
   return helpers.signin_user_db(user_db)
 
 
-@vk.tokengetter
+@provider.tokengetter
 def get_vk_oauth_token():
   return flask.session.get('oauth_token')
 
@@ -60,7 +60,7 @@ def get_vk_oauth_token():
 @bp.route('/signin/%s/' % PROVIDER_NAME)
 def signin():
   helpers.save_request_params()
-  return vk.authorize(callback=flask.url_for(
+  return provider.authorize(callback=flask.url_for(
       'auth.%s.service.authorized' % PROVIDER_NAME, _external=True
     ))
 
@@ -76,4 +76,3 @@ def retrieve_user_from_vk(response):
       response['user_name'],
       response['user_name'],
     )
-
