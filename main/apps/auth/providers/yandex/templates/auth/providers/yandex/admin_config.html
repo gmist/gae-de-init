@@ -1,0 +1,14 @@
+# import 'macro/forms.html' as forms
+{{
+  forms.oauth_fields(
+      'Yandex',
+      (form.yandex_app_id, form.yandex_app_secret),
+      '''
+        Callback URL</a>:
+        <em>%s</em><br>
+        <a href="https://oauth.yandex.com/client/new" target="_blank">Register</a> an application or
+        <a href="https://oauth.yandex.com/client/my" target="_blank">manage</a> the existing ones on
+        <a href="http://yandex.com/" target="_blank">Yandex</a>.
+      ''' % url_for('auth.yandex.service.authorized', _external=True)
+    )
+  }}
