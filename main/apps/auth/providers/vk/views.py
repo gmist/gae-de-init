@@ -27,7 +27,7 @@ bps = flask.Blueprint(
 provider_oauth = oauth.OAuth()
 
 provider = provider_oauth.remote_app(
-    'vk',
+    PROVIDER_NAME,
     base_url='https://api.vk.com/',
     request_token_url=None,
     access_token_url='https://oauth.vk.com/access_token',
