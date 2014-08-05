@@ -6,5 +6,6 @@ CONFIG = {
         'yandex_app_id': 'App ID',
         'yandex_app_secret': 'App Secret',
       },
+    'icon_class': 'fa-question',
   }
 

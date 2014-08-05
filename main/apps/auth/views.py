@@ -27,7 +27,8 @@ bp = flask.Blueprint(
 @auth.admin_required
 def admin_index():
   auth_db = models.AuthProviders.get_master_db()
-  auth_providers = auth.PROVIDERS_CONFIG
+  auth_providers = auth.PROVIDERS_CONFIG.values()
+  auth_providers = sorted(auth_providers, key=lambda x: x.get('name'))
   form = forms.AuthProvidersForm.append_providers(
       auth_providers)(obj=auth_db)
   if form.validate_on_submit():
@@ -56,14 +57,13 @@ def signin():
 
   auth_db = models.AuthProviders.get_master_db()
   auth_providers = []
-  for provider in PROVIDERS_CONFIG:
-    name = provider.get('name')
+  for name, provider in PROVIDERS_CONFIG.iteritems():
     has_fields = True
     for field in provider.get('key_fields', {}).iterkeys():
       if not hasattr(auth_db, field) or not getattr(auth_db, field):
         has_fields = False
 
-    if name and has_fields:
+    if has_fields:
       provider['signin_url'] = flask.url_for('auth.%s.signin' % name, next=next_url)
       auth_providers.append(provider)
 
@@ -71,7 +71,7 @@ def signin():
       'auth/signin.html',
       title='Please sign in',
       html_class='signin',
-      auth_providers=auth_providers,
+      auth_providers=sorted(auth_providers, key=lambda x: x.get('name')),
       next_url=next_url,
     )
 

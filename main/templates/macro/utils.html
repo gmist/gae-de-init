@@ -42,15 +42,7 @@
 
 
 # macro auth_icon(auth_id)
-  # if auth_id.startswith('federated')
-    <span class="fa fa-fw fa-google-plus"></span>
-  # elif auth_id.startswith('facebook')
-    <span class="fa fa-fw fa-facebook"></span>
-  # elif auth_id.startswith('twitter')
-    <span class="fa fa-fw fa-twitter"></span>
-  # else
-    <span class="fa fa-fw fa-question"></span>
-  # endif
+  <span class="fa fa-fw {{provider_icon(auth_id)}}"></span>
 # endmacro
 
 

@@ -46,7 +46,7 @@ def authorized():
 
 
 def retrieve_user_from_google(google_user):
-  auth_id = 'federated_%s' % google_user.user_id()
+  auth_id = '%s_%s' % (PROVIDER_NAME, google_user.user_id())
   user_db = models.User.get_by('auth_ids', auth_id)
   if user_db:
     if not user_db.admin and users.is_current_user_admin():

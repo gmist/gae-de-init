@@ -12,15 +12,22 @@ from login_manager import is_logged_in
 
 
 def load_providers_config():
-  providers = []
+  providers = {}
   for pkg in werk_utils.find_modules('%s.providers' % __package__, True):
     cfg = werk_utils.import_string('%s.CONFIG' % pkg, True)
-    if cfg:
-        providers.append(cfg)
+    if cfg and cfg.get('name'):
+        providers[cfg['name']] = cfg
   return providers
 
 PROVIDERS_CONFIG = load_providers_config()
 del load_providers_config
+
+
+def get_provider_icon(auth_id):
+  for name, provider in PROVIDERS_CONFIG.iteritems():
+    if auth_id.startswith(name):
+      return provider.get('icon_class') or 'fa-%s' % name
+  return 'fa-question'
 
 
 def register_providers(app):
@@ -39,3 +46,6 @@ def app_init(app):
   import apps.user.forms
 
   register_providers(app)
+  app.jinja_env.globals.update(
+      provider_icon=get_provider_icon
+    )
