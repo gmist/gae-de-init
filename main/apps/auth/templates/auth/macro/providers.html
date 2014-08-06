@@ -1,3 +1,7 @@
+# macro include_admin_help(provider)
+  # include "auth/providers/" + provider.name + "/admin_help.html" ignore missing
+# endmacro
+
 # macro signin_button(provider)
   <a class="btn btn-block btn-lg btn-social btn-{{ provider.name }}"
      href="{{ provider.signin_url }}"

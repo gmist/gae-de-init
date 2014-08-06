@@ -1,4 +1,6 @@
 # extends 'base.html'
+# import 'macro/forms.html' as forms
+# import 'auth/macro/providers.html' as providers_macro
 
 # block content
 <div class="page-header">
@@ -26,7 +28,15 @@
       {{form.csrf_token}}
       <div class="panel-group" id="oauth">
         # for provider in auth_providers
-          # include "auth/providers/" + provider.name + "/admin_config.html" ignore missing
+          # if provider.key_fields
+            {{
+              forms.oauth_fields(
+                  provider.title or provider.name|capitalize,
+                  provider.key_fields,
+                  providers_macro.include_admin_help(provider)
+                )
+            }}
+          # endif
         # endfor
       </div>
     </fieldset>

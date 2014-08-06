@@ -1,4 +1,5 @@
 # coding: utf-8
+import copy
 from flask.ext import login
 import flask
 
@@ -27,7 +28,7 @@ bp = flask.Blueprint(
 @auth.admin_required
 def admin_index():
   auth_db = models.AuthProviders.get_master_db()
-  auth_providers = auth.PROVIDERS_CONFIG.values()
+  auth_providers = copy.deepcopy(auth.PROVIDERS_CONFIG.values())
   auth_providers = sorted(auth_providers, key=lambda x: x.get('name'))
   form = forms.AuthProvidersForm.append_providers(
       auth_providers)(obj=auth_db)
@@ -41,6 +42,12 @@ def admin_index():
     form.populate_obj(auth_db)
     auth_db.put()
     return flask.redirect(flask.url_for('admin.index'))
+  for provider in auth_providers:
+    form_key_fields = []
+    provider_keys = sorted(provider.get('key_fields', {}).keys())
+    for field in provider_keys:
+      form_key_fields.append(getattr(form, field))
+    provider['key_fields'] = form_key_fields
   return flask.render_template(
       'auth/admin/index.html',
       title='Auth Config',
