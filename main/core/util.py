@@ -132,7 +132,7 @@ def model_db_to_object(model_db):
     if prop == 'id':
       try:
         value = json_value(getattr(model_db, 'key', None).id())
-      except:
+      except AttributeError:
         value = None
     else:
       value = json_value(getattr(model_db, prop, None))
