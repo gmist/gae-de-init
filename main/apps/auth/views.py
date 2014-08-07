@@ -43,10 +43,8 @@ def admin_index():
     auth_db.put()
     return flask.redirect(flask.url_for('admin.index'))
   for provider in auth_providers:
-    form_key_fields = []
     provider_keys = sorted(provider.get('key_fields', {}).keys())
-    for field in provider_keys:
-      form_key_fields.append(getattr(form, field))
+    form_key_fields = [getattr(form, field) for field in provider_keys]
     provider['key_fields'] = form_key_fields
   return flask.render_template(
       'auth/admin/index.html',
