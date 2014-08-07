@@ -9,20 +9,24 @@ from core import util
 # User Update
 ###############################################################################
 class UserUpdateForm(wtf.Form):
-  username = wtf.StringField('Username',
+  username = wtf.StringField(
+      'Username',
       [wtf.validators.required(), wtf.validators.length(min=3)],
       filters=[util.email_filter],
     )
-  name = wtf.StringField('Name',
+  name = wtf.StringField(
+      'Name',
       [wtf.validators.required()], filters=[util.strip_filter],
     )
-  email = wtf.StringField('Email',
+  email = wtf.StringField(
+      'Email',
       [wtf.validators.optional(), wtf.validators.email()],
       filters=[util.email_filter],
     )
   admin = wtf.BooleanField('Admin')
   active = wtf.BooleanField('Active')
-  permissions = wtf.SelectMultipleField('Permissions',
+  permissions = wtf.SelectMultipleField(
+      'Permissions',
       filters=[util.sort_filter],
     )
 
@@ -46,10 +50,12 @@ class UserMergeForm(wtf.Form):
   user_key = wtf.StringField('User Key', [wtf.validators.required()])
   user_keys = wtf.StringField('User Keys', [wtf.validators.required()])
   username = wtf.StringField('Username', [wtf.validators.optional()])
-  name = wtf.StringField('Name (merged)',
+  name = wtf.StringField(
+      'Name (merged)',
       [wtf.validators.required()], filters=[util.strip_filter],
     )
-  email = wtf.StringField('Email (merged)',
+  email = wtf.StringField(
+      'Email (merged)',
       [wtf.validators.optional(), wtf.validators.email()],
       filters=[util.email_filter],
     )
@@ -59,10 +65,12 @@ class UserMergeForm(wtf.Form):
 # Profile stuff
 ###############################################################################
 class ProfileUpdateForm(wtf.Form):
-  name = wtf.StringField('Name',
+  name = wtf.StringField(
+      'Name',
       [wtf.validators.required()], filters=[util.strip_filter],
     )
-  email = wtf.StringField('Email',
+  email = wtf.StringField(
+      'Email',
       [wtf.validators.optional(), wtf.validators.email()],
       filters=[util.email_filter],
     )
