@@ -1,6 +1,7 @@
 # coding: utf-8
 import logging
 import flask
+import funcy
 
 from core import util
 import config
@@ -12,7 +13,7 @@ app.jinja_env.line_statement_prefix = '#'
 app.jinja_env.line_comment_prefix = '##'
 app.jinja_env.globals.update(
     check_form_fields=util.check_form_fields,
-    is_iterable=util.is_iterable,
+    is_iterable=funcy.is_seqcoll,
     slugify=util.slugify,
     update_query_argument=util.update_query_argument,
   )

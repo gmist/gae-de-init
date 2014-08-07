@@ -151,7 +151,7 @@ def json_value(value):
     return urllib.quote(str(value))
   if isinstance(value, ndb.GeoPt):
     return '%s,%s' % (value.lat, value.lon)
-  if isinstance(value, (list, tuple)):
+  if funcy.is_seqcoll(value):
     return [json_value(v) for v in value]
   if isinstance(value, long):
     # Big numbers are sent as strings for accuracy in JavaScript
@@ -175,14 +175,10 @@ def jsonpify(*args, **kwargs):
 ###############################################################################
 # Helpers
 ###############################################################################
-def is_iterable(value):
-  return isinstance(value, (tuple, list))
-
-
 def check_form_fields(*fields):
   fields_data = []
   for field in fields:
-    if is_iterable(field):
+    if funcy.is_seqcoll(field):
       fields_data.extend([field.data for field in field])
     else:
       fields_data.append(field.data)
