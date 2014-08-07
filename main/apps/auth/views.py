@@ -67,6 +67,7 @@ def signin():
     for field in provider.get('key_fields', {}).iterkeys():
       if not hasattr(auth_db, field) or not getattr(auth_db, field):
         has_fields = False
+        break
 
     if has_fields:
       provider['signin_url'] = flask.url_for('auth.%s.signin' % name, next=next_url)
