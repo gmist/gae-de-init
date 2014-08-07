@@ -10,6 +10,7 @@ from google.appengine.datastore.datastore_query import Cursor
 from google.appengine.ext import blobstore
 from google.appengine.ext import ndb
 import flask
+import funcy
 from werkzeug import utils as werk_utils
 
 
@@ -247,19 +248,16 @@ def update_query_argument(name, value=None, ignore='cursor', is_list=False):
   return '%s%s' % (flask.request.path, '?%s' % query if query else '')
 
 
+def get_module_obj(pkg_views, obj_name):
+  return werk_utils.import_string('%s.%s' %(pkg_views, obj_name), True)
+
+
 def register_apps(app):
   for pkg in werk_utils.find_modules('apps', True):
     pkg_views = '%s.views' % pkg
-    bpa = werk_utils.import_string('%s.bpa' % pkg_views, True)
-    if bpa:
-      app.register_blueprint(bpa)
-    bp = werk_utils.import_string('%s.bp' % pkg_views, True)
-    if bp:
-      app.register_blueprint(bp)
-    bps = werk_utils.import_string('%s.bps' % pkg_views, True)
-    if bps:
-      app.register_blueprint(bps)
-    app_init = werk_utils.import_string('%s.app_init' % pkg, True)
+    objs = [get_module_obj(pkg_views, obj) for obj in ['bpa', 'bp', 'bps']]
+    funcy.walk(funcy.silent(app.register_blueprint), objs)
+    app_init = get_module_obj(pkg, 'app_init')
     if app_init:
       app_init(app)
 
