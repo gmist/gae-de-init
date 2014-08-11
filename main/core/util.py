@@ -258,6 +258,23 @@ def register_apps(app):
       app_init(app)
 
 
+def register_api(api):
+  for pkg in werk_utils.find_modules('apps', True):
+    pkg_api = '%s.api' % pkg
+    resources = get_module_obj(pkg_api, 'API')
+    if not resources:
+      continue
+    for resource in resources:
+      register_api_resource(api, resource)
+
+def register_api_resource(api, resource):
+  if funcy.is_seqcoll(resource):
+    cls = funcy.first(resource)
+    url = funcy.second(resource)
+    endpoint = funcy.nth(2, resource)
+    api.add_resource(cls, url, endpoint=endpoint)
+
+
 ###############################################################################
 # Lambdas
 ###############################################################################

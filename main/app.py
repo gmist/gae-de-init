@@ -1,5 +1,7 @@
 # coding: utf-8
 import logging
+
+from flask.ext import restful
 import flask
 import funcy
 
@@ -23,6 +25,9 @@ if config.DEVELOPMENT:
   app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, evalex=True)
 
 util.register_apps(app)
+
+api = restful.Api(app)
+util.register_api(api)
 
 
 ###############################################################################
