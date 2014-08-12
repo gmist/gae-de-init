@@ -4,13 +4,13 @@ from google.appengine.ext import ndb
 from flask.ext import restful
 import flask
 
+from apps import auth
 from core import util
-from apps.auth import admin_required
 import models
 
 
 class UsersAPI(restful.Resource):
-  @admin_required
+  @auth.admin_required
   def get(self):
     user_keys = util.param('user_keys', list)
     if user_keys:
@@ -20,7 +20,7 @@ class UsersAPI(restful.Resource):
       user_dbs, _ = models.User.get_dbs()
     return util.jsonify_model_dbs(user_dbs)
 
-  @admin_required
+  @auth.admin_required
   def delete(self):
     user_keys = util.param('user_keys', list)
     if user_keys:
@@ -37,12 +37,12 @@ class UsersAPI(restful.Resource):
 
 
 class UserAPI(restful.Resource):
-  @admin_required
+  @auth.admin_required
   def get(self, key):
     user_db = ndb.Key(urlsafe=key).get()
     return util.jsonify_model_db(user_db)
 
-  @admin_required
+  @auth.admin_required
   def delete(self, key):
     user_db = ndb.Key(urlsafe=key).get()
     if user_db:
