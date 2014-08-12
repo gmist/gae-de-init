@@ -16,12 +16,6 @@ bp = flask.Blueprint(
     template_folder='templates',
   )
 
-bps = flask.Blueprint(
-    'admin.service',
-    __name__,
-    url_prefix='/_s/admin',
-  )
-
 
 @bp.route('/')
 @auth.admin_required
@@ -29,7 +23,6 @@ def index():
   return flask.render_template('admin/index.html')
 
 
-@bps.route('/config/')
 @bp.route('/config/', methods=['GET', 'POST'])
 @auth.admin_required
 def config_update():
@@ -44,9 +37,6 @@ def config_update():
     reload(config)
     flask.current_app.config.update(CONFIG_DB=config_db)
     return flask.redirect(flask.url_for('pages.welcome'))
-
-  if flask.request.path.startswith('/_s/'):
-    return util.jsonify_model_db(config_db)
 
   instances_url = None
   if config.PRODUCTION:
@@ -63,5 +53,5 @@ def config_update():
       form=form,
       config_db=config_db,
       instances_url=instances_url,
-      has_json=True,
+      api_url=flask.url_for('api.config'),
     )

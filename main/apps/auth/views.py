@@ -51,6 +51,7 @@ def admin_index():
       title='Auth Config',
       form=form,
       auth_providers=auth_providers,
+      api_url=flask.url_for('api.auth.providers'),
     )
 
 @bp.route('/login/')

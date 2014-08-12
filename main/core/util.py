@@ -269,9 +269,11 @@ def register_api(api):
 
 def register_api_resource(api, resource):
   if funcy.is_seqcoll(resource):
-    cls = funcy.first(resource)
-    url = funcy.second(resource)
-    endpoint = funcy.nth(2, resource)
+    cls, url, endpoint = (
+        funcy.first(resource),
+        funcy.second(resource),
+        funcy.nth(2, resource),
+      )
     api.add_resource(cls, url, endpoint=endpoint)
 
 

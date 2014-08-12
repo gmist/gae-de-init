@@ -24,12 +24,6 @@ bp = flask.Blueprint(
     template_folder='templates',
   )
 
-bps = flask.Blueprint(
-    'feedback.service',
-    __name__,
-    url_prefix='/feedback/service',
-  )
-
 
 @bpa.route('/', endpoint='list')
 @auth.admin_required
@@ -42,6 +36,7 @@ def admin_list():
       title='Feedback List',
       feedback_dbs=feedback_dbs,
       next_url=util.generate_next_url(feedback_cursor),
+      api_url=flask.url_for('api.feedbacks')
     )
 
 
@@ -63,7 +58,8 @@ def admin_show(feedback_id):
       title='Show Feedback',
       html_class='feedback-show',
       form=form,
-      feedback_db=feedback_db
+      feedback_db=feedback_db,
+      api_url=flask.url_for('api.feedback', key=feedback_db.key.urlsafe())
   )
 
 
@@ -90,15 +86,3 @@ def index():
       html_class='feedback',
       form=form,
     )
-
-
-@bps.route('/delete/', methods=['DELETE'], endpoint='delete')
-@auth.admin_required
-def feedback_delete():
-  feedback_keys = util.param('feedback_keys', list)
-  user_db_keys = [ndb.Key(urlsafe=k) for k in feedback_keys]
-  util.delete_dbs(user_db_keys)
-  return flask.jsonify({
-      'result': feedback_keys,
-      'status': 'success',
-    })

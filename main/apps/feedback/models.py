@@ -12,6 +12,14 @@ class Feedback(base.Base):
   comment = ndb.TextProperty()
   is_read = ndb.BooleanProperty(default=False)
   user = ndb.KeyProperty()
+  _PROPERTIES = base.Base._PROPERTIES.union({
+      'subject',
+      'message',
+      'email',
+      'comment',
+      'is_read',
+      'user',
+    })
 
   @classmethod
   def get_dbs(cls, is_read=None, **kwargs):

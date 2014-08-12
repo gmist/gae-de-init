@@ -25,7 +25,7 @@ def login_required(f):
   def decorated_function(*args, **kws):
     if is_logged_in():
       return f(*args, **kws)
-    if flask.request.path.startswith('/_s/'):
+    if flask.request.path.startswith('/api/'):
       return flask.abort(401)
     return flask.redirect(flask.url_for('auth.signin', next=flask.request.url))
   return decorated_function
@@ -38,7 +38,7 @@ def admin_required(f):
   def decorated_function(*args, **kws):
     if is_logged_in() and current_user_db().admin:
       return f(*args, **kws)
-    if not is_logged_in() and flask.request.path.startswith('/_s/'):
+    if not is_logged_in() and flask.request.path.startswith('/api/'):
       return flask.abort(401)
     if not is_logged_in():
       return flask.redirect(flask.url_for('auth.signin', next=flask.request.url))
@@ -63,7 +63,7 @@ def permission_required(permission=None, methods=None):
       if is_logged_in() and current_user_db().has_permission(perm):
         return f(*args, **kws)
       if not is_logged_in():
-        if flask.request.path.startswith('/_s/'):
+        if flask.request.path.startswith('/api/'):
           return flask.abort(401)
         return flask.redirect(flask.url_for('auth.signin', next=flask.request.url))
       return flask.abort(403)

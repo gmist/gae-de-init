@@ -2,6 +2,7 @@
 from google.appengine.ext import ndb
 from flask.ext import login
 
+from core import base
 
 class AnonymousUser(login.AnonymousUserMixin):
   id = 0
@@ -42,7 +43,7 @@ class FlaskUser(AnonymousUser):
     return self.user_db.has_permission(permission)
 
 
-class AuthProviders(ndb.Expando):
+class AuthProviders(ndb.Expando, base.Base):
   def get_field(self, field_name):
     try:
       return getattr(AuthProviders.get_master_db(), field_name)
