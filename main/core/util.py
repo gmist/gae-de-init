@@ -153,7 +153,7 @@ def json_value(value):
     return '%s,%s' % (value.lat, value.lon)
   if funcy.is_seqcoll(value):
     return [json_value(v) for v in value]
-  if isinstance(value, long):
+  if isinstance(value, (int, long)):
     # Big numbers are sent as strings for accuracy in JavaScript
     if value > 9007199254740992 or value < -9007199254740992:
       return str(value)
