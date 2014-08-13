@@ -1,5 +1,5 @@
 # coding: utf-8
-
+from datetime import datetime
 from google.appengine.ext import ndb
 from flask.ext import restful
 import flask
@@ -40,7 +40,13 @@ class UserAPI(restful.Resource):
   @auth.admin_required
   def get(self, key):
     user_db = ndb.Key(urlsafe=key).get()
-    return util.jsonify_model_db(user_db)
+    if not user_db:
+      flask.abort(404)
+    return {
+        'status': 'success',
+        'now': datetime.utcnow().isoformat(),
+        'result': restful.marshal(user_db, models.user_fields)
+      }
 
   @auth.admin_required
   def delete(self, key):

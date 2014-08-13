@@ -1,6 +1,8 @@
 # coding: utf-8
 import hashlib
 from google.appengine.ext import ndb
+from flask.ext.restful import fields
+import funcy
 
 from core import base, util
 
@@ -51,3 +53,17 @@ class User(base.Base):
     user_dbs, _ = util.get_dbs(cls.query(), username=username, limit=2)
     c = len(user_dbs)
     return not (c == 2 or c == 1 and self_db.key != user_dbs[0].key)
+
+
+user_fields = funcy.merge(
+    base.base_fields,
+    {
+        'active': fields.Boolean,
+        'admin': fields.Boolean,
+        'auth_ids': fields.List(fields.String),
+        'avatar_url': fields.String,
+        'email': fields.String,
+        'name': fields.String,
+        'username': fields.String,
+        'permissions': fields.List(fields.String)
+  })

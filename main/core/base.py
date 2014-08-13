@@ -1,6 +1,8 @@
 # coding: utf-8
 from google.appengine.ext import ndb
+from flask.ext.restful import fields
 
+from core.api import fields as cfields
 from core import util
 import config
 
@@ -31,3 +33,12 @@ class Base(ndb.Model):
         order=order or util.param('order') or '-created',
         **kwargs
       )
+
+
+base_fields = {
+    'key': cfields.Key,
+    'id': cfields.Id,
+    'version': cfields.Integer,
+    'created': cfields.DateTime,
+    'modified': cfields.DateTime,
+  }
