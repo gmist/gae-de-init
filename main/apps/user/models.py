@@ -26,17 +26,6 @@ class User(base.Base):
       }
   avatar_url = property(avatar_url_size)
 
-  _PROPERTIES = base.Base._PROPERTIES.union({
-      'active',
-      'admin',
-      'auth_ids',
-      'avatar_url',
-      'email',
-      'name',
-      'username',
-      'permissions',
-    })
-
   @classmethod
   def get_dbs(cls, admin=None, active=None, permissions=None, **kwargs):
     return super(User, cls).get_dbs(
@@ -56,8 +45,7 @@ class User(base.Base):
 
 
 user_fields = funcy.merge(
-    base.base_fields,
-    {
+    base.base_fields, {
         'active': fields.Boolean,
         'admin': fields.Boolean,
         'auth_ids': fields.List(fields.String),
