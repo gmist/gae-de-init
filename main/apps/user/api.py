@@ -17,8 +17,18 @@ class UsersAPI(restful.Resource):
       user_db_keys = [ndb.Key(urlsafe=k) for k in user_keys]
       user_dbs = ndb.get_multi(user_db_keys)
       return util.jsonify_model_dbs(user_dbs)
-    user_dbs, user_cursor = models.User.get_dbs()
-    return util.jsonify_model_dbs(user_dbs, user_cursor)
+
+    user_dbs, next_cursor = models.User.get_dbs()
+    response_object = {
+        'status': 'success',
+        'count': len(user_dbs),
+        'now': datetime.utcnow().isoformat(),
+        'result': map(lambda l: restful.marshal(l, models.user_fields), user_dbs),
+      }
+    if next_cursor:
+      response_object['next_cursor'] = next_cursor
+      response_object['next_url'] = util.generate_next_url(next_cursor)
+    return response_object
 
   @auth.admin_required
   def delete(self):
