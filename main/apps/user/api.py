@@ -16,9 +16,9 @@ class UsersAPI(restful.Resource):
     if user_keys:
       user_db_keys = [ndb.Key(urlsafe=k) for k in user_keys]
       user_dbs = ndb.get_multi(user_db_keys)
-    else:
-      user_dbs, _ = models.User.get_dbs()
-    return util.jsonify_model_dbs(user_dbs)
+      return util.jsonify_model_dbs(user_dbs)
+    user_dbs, user_cursor = models.User.get_dbs()
+    return util.jsonify_model_dbs(user_dbs, user_cursor)
 
   @auth.admin_required
   def delete(self):
