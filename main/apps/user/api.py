@@ -16,7 +16,7 @@ class UsersAPI(restful.Resource):
     if user_keys:
       user_db_keys = [ndb.Key(urlsafe=k) for k in user_keys]
       user_dbs = ndb.get_multi(user_db_keys)
-      return util.jsonify_model_dbs(user_dbs)
+      return api.make_response(user_dbs, models.user_fields)
 
     user_dbs, next_cursor = models.User.get_dbs()
     return api.make_response(user_dbs, models.user_fields, next_cursor)
