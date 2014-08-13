@@ -1,13 +1,10 @@
 # coding: utf-8
-from datetime import datetime
-from datetime import date
 from uuid import uuid4
 import re
 import unicodedata
 import urllib
 
 from google.appengine.datastore.datastore_query import Cursor
-from google.appengine.ext import blobstore
 from google.appengine.ext import ndb
 import flask
 import funcy
