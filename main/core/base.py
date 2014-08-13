@@ -12,14 +12,6 @@ class Base(ndb.Model):
   modified = ndb.DateTimeProperty(auto_now=True)
   version = ndb.IntegerProperty(default=config.CURRENT_VERSION_TIMESTAMP)
 
-  _PROPERTIES = {
-      'key',
-      'id',
-      'version',
-      'created',
-      'modified',
-    }
-
   @classmethod
   def get_by(cls, name, value):
     return cls.query(getattr(cls, name) == value).get()
