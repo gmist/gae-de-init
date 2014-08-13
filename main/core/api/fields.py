@@ -41,6 +41,7 @@ class Integer(fields.Raw):
   def format(self, value):
     if value > 9007199254740992 or value < -9007199254740992:
       return repr(value)
+    return value
 
 
 class DateTime(fields.Raw):
@@ -49,39 +50,9 @@ class DateTime(fields.Raw):
 
 
 class Id(fields.Raw):
-  def format(self, value):
-    if value:
-      return value.id()
-    return None
-
-def get_field_type(value):
-  if is_blob(value):
-    return Blob
-  if is_blob_key(value):
-    return BlobKey
-  if is_geo_pt(value):
-    return GeoPt
-  # if is_key(value):
-  #   return Key
-  if is_date_time(value):
-    return DateTime
-  if is_float(value):
-    return fields.Float
-  if is_integer(value):
-    return Integer
-  if is_string(value):
-    return fields.String
-  return fields.String
-
-def get_marshal_table(model_db):
-  table = {}
-  for prop in model_db._PROPERTIES:
-    if prop == 'id':
-      try:
-        getattr(model_db, 'key')
-        table['id'] = Id(attribute='key')
-      except AttributeError:
-        table['id'] = fields.Raw()
-    else:
-      table[prop] = get_field_type(getattr(model_db, prop, None))
-  return table
+  def output(self, key, obj):
+    try:
+      value = getattr(obj, 'key', None).id()
+      return super(Id, self).output(key, {'id': value})
+    except AttributeError:
+      return None
