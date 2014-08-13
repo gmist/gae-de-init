@@ -2,7 +2,7 @@
 
 from flask.ext import restful
 
-from core import util
+from core import api
 from apps import auth
 import models
 
@@ -10,8 +10,7 @@ import models
 class ConfigAPI(restful.Resource):
   @auth.admin_required
   def get(self):
-    config_db = models.Config.get_master_db()
-    return util.jsonify_model_db(config_db)
+    return api.make_response(models.Config.get_master_db(), models.config_fields)
 
 
 API = [

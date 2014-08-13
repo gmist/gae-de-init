@@ -1,10 +1,10 @@
 # coding: utf-8
-from datetime import datetime
 from google.appengine.ext import ndb
 from flask.ext import restful
 import flask
 
 from apps import auth
+from core import api
 from core import util
 import models
 
@@ -19,16 +19,7 @@ class UsersAPI(restful.Resource):
       return util.jsonify_model_dbs(user_dbs)
 
     user_dbs, next_cursor = models.User.get_dbs()
-    response_object = {
-        'status': 'success',
-        'count': len(user_dbs),
-        'now': datetime.utcnow().isoformat(),
-        'result': map(lambda l: restful.marshal(l, models.user_fields), user_dbs),
-      }
-    if next_cursor:
-      response_object['next_cursor'] = next_cursor
-      response_object['next_url'] = util.generate_next_url(next_cursor)
-    return response_object
+    return api.make_response(user_dbs, models.user_fields, next_cursor)
 
   @auth.admin_required
   def delete(self):
@@ -52,11 +43,7 @@ class UserAPI(restful.Resource):
     user_db = ndb.Key(urlsafe=key).get()
     if not user_db:
       flask.abort(404)
-    return {
-        'status': 'success',
-        'now': datetime.utcnow().isoformat(),
-        'result': restful.marshal(user_db, models.user_fields)
-      }
+    return api.make_response(user_db, models.user_fields)
 
   @auth.admin_required
   def delete(self, key):

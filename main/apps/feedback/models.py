@@ -1,6 +1,9 @@
 # coding: utf-8
 from google.appengine.ext import ndb
+from flask.ext.restful import fields
+import funcy
 
+from core.api import fields as cfields
 from core import base
 from core import util
 
@@ -12,14 +15,6 @@ class Feedback(base.Base):
   comment = ndb.TextProperty()
   is_read = ndb.BooleanProperty(default=False)
   user = ndb.KeyProperty()
-  _PROPERTIES = base.Base._PROPERTIES.union({
-      'subject',
-      'message',
-      'email',
-      'comment',
-      'is_read',
-      'user',
-    })
 
   @classmethod
   def get_dbs(cls, is_read=None, **kwargs):
@@ -27,3 +22,12 @@ class Feedback(base.Base):
         is_read=is_read or util.param('is_read', bool),
         **kwargs
       )
+
+feedback_fields = funcy.merge(base.base_fields, {
+    'subject': fields.String,
+    'message': fields.String,
+    'email': fields.String,
+    'comment': fields.String,
+    'is_read': fields.Boolean,
+    'user': cfields.Key,
+  })

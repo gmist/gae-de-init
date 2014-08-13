@@ -5,6 +5,7 @@ from flask.ext import restful
 import flask
 
 from apps import auth
+from core import api
 from core import util
 import models
 
@@ -12,8 +13,8 @@ import models
 class FeedbacksAPI(restful.Resource):
   @auth.admin_required
   def get(self):
-    feedback_dbs, feedback_cursor = models.Feedback.get_dbs()
-    return util.jsonify_model_dbs(feedback_dbs, feedback_cursor)
+    feedback_dbs, next_cursor = models.Feedback.get_dbs()
+    return api.make_response(feedback_dbs, models.feedback_fields, next_cursor)
 
   @auth.admin_required
   def delete(self):
@@ -30,12 +31,9 @@ class FeedbackAPI(restful.Resource):
   @auth.admin_required
   def get(self, key):
     feedback = ndb.Key(urlsafe=key).get()
-    if feedback:
-      return util.jsonify_model_db(feedback)
-    return flask.jsonify({
-        'result': 'Feedback %s not found',
-        'status': 'fail',
-    })
+    if not feedback:
+      flask.abort(404)
+    return api.make_response(feedback, models.feedback_fields)
 
 
 API = [
