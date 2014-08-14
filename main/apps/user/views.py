@@ -23,7 +23,7 @@ bp = flask.Blueprint(
 @bp.route('/', endpoint='list')
 @auth.admin_required
 def user_list():
-  user_dbs, user_cursor = models.User.get_dbs()
+  user_dbs, user_cursor, prev_cursor = models.User.get_dbs()
   permissions = list(forms.UserUpdateForm._permission_choices)
   permissions += util.param('permissions', list) or []
   return flask.render_template(
@@ -32,6 +32,7 @@ def user_list():
       title='User List',
       user_dbs=user_dbs,
       next_url=util.generate_next_url(user_cursor),
+      prev_url=util.generate_next_url(prev_cursor),
       permissions=sorted(set(permissions)),
       api_url=flask.url_for('api.users')
     )

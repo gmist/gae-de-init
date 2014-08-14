@@ -65,27 +65,37 @@ def get_dbs(
   limit = limit or flask.current_app.config.get('DEFAULT_DB_LIMIT')
   cursor = Cursor.from_websafe_string(cursor) if cursor else None
   model_class = ndb.Model._kind_map[query.kind]
+  query_reverse = query
+  query_forward = query
   if order:
     for o in order.split(','):
       if o.startswith('-'):
-        query = query.order(-model_class._properties[o[1:]])
+        query_reverse = query_reverse.order(model_class._properties[o[1:]])
+        query_forward = query_forward.order(-model_class._properties[o[1:]])
       else:
-        query = query.order(model_class._properties[o])
+        query_reverse = query_reverse.order(-model_class._properties[o])
+        query_forward = query_forward.order(model_class._properties[o])
 
   for prop in filters:
     if filters.get(prop, None) is None:
       continue
-    if isinstance(filters[prop], list):
+    if funcy.is_seqcoll(filters[prop]):
       for value in filters[prop]:
-        query = query.filter(model_class._properties[prop] == value)
+        query_reverse = query_reverse.filter(model_class._properties[prop] == value)
+        query_forward = query_forward.filter(model_class._properties[prop] == value)
     else:
-      query = query.filter(model_class._properties[prop] == filters[prop])
+      query_reverse = query_reverse.filter(model_class._properties[prop] == filters[prop])
+      query_forward = query_forward.filter(model_class._properties[prop] == filters[prop])
 
-  model_dbs, next_cursor, more = query.fetch_page(
+  model_dbs, next_cursor, more = query_forward.fetch_page(
       limit, start_cursor=cursor, keys_only=keys_only,
     )
-  next_cursor = next_cursor.to_websafe_string() if more else None
-  return list(model_dbs), next_cursor
+  model_dbs_prev, prev_cursor, rev_more = query_reverse.fetch_page(
+      limit, start_cursor=cursor.reversed() if cursor else None, keys_only=True
+    )
+  next_cursor = next_cursor.urlsafe() if more else None
+  prev_cursor = prev_cursor.reversed().urlsafe() if prev_cursor and cursor else None
+  return list(model_dbs), next_cursor, prev_cursor
 
 
 @ndb.transactional(xg=True)

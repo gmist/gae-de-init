@@ -28,15 +28,16 @@ bp = flask.Blueprint(
 @bpa.route('/', endpoint='list')
 @auth.admin_required
 def admin_list():
-  feedback_dbs, feedback_cursor = models.Feedback.get_dbs()
+  feedback_dbs, next_cursor, prev_cursor = models.Feedback.get_dbs()
 
   return flask.render_template(
       'feedback/admin/list.html',
       html_class='feedback-list',
       title='Feedback List',
       feedback_dbs=feedback_dbs,
-      next_url=util.generate_next_url(feedback_cursor),
-      api_url=flask.url_for('api.feedbacks')
+      next_url=util.generate_next_url(next_cursor),
+      prev_url=util.generate_next_url(prev_cursor),
+      api_url=flask.url_for('api.feedbacks'),
     )
 
 

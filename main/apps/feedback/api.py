@@ -13,8 +13,9 @@ import models
 class FeedbacksAPI(restful.Resource):
   @auth.admin_required
   def get(self):
-    feedback_dbs, next_cursor = models.Feedback.get_dbs()
-    return api.make_response(feedback_dbs, models.feedback_fields, next_cursor)
+    feedback_dbs, next_cursor, prev_cursor = models.Feedback.get_dbs()
+    return api.make_response(
+        feedback_dbs, models.feedback_fields, next_cursor, prev_cursor)
 
   @auth.admin_required
   def delete(self):
