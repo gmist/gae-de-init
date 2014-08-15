@@ -64,13 +64,10 @@ def signin():
   auth_db = models.AuthProviders.get_master_db()
   auth_providers = []
   for name, provider in PROVIDERS_CONFIG.iteritems():
-    has_fields = True
     for field in provider.get('key_fields', {}).iterkeys():
       if not hasattr(auth_db, field) or not getattr(auth_db, field):
-        has_fields = False
         break
-
-    if has_fields:
+    else:
       provider['signin_url'] = flask.url_for('auth.%s.signin' % name, next=next_url)
       auth_providers.append(provider)
 
