@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 import flask
 
 from apps import auth
+from core import task
 from core import util
 import forms
 import models
@@ -74,6 +75,20 @@ def user_update(user_id):
     )
 
 
+@bp.route('/verify_email/<token>/')
+@auth.login_required
+def verify_email(token):
+  user_db = auth.current_user_db()
+  if user_db.token != token:
+    flask.flash('This token is invalid or expired.', category='danger')
+    return flask.redirect(flask.url_for('user.profile', token=token))
+  user_db.verified = True
+  user_db.token = util.uuid()
+  user_db.put()
+  flask.flash('Hooray! Your email is now verified.', category='success')
+  return flask.redirect(flask.url_for('user.profile'))
+
+
 @bp.route('/merge/', methods=['GET', 'POST'])
 @auth.admin_required
 def merge():
@@ -105,6 +120,7 @@ def merge():
   merged_user_db.permissions = permissions
   merged_user_db.admin = is_admin
   merged_user_db.active = is_active
+  merged_user_db.verified = False
 
   form_obj = copy.deepcopy(merged_user_db)
   form_obj.user_key = merged_user_db.key.urlsafe()
@@ -130,7 +146,7 @@ def merge():
       merged_user_db=merged_user_db,
       form=form,
       auth_ids=auth_ids,
-      api_url = flask.url_for('api.users', user_keys=','.join(user_keys))
+      api_url=flask.url_for('api.users', user_keys=','.join(user_keys))
     )
 
 
@@ -153,7 +169,11 @@ def profile():
   form = forms.ProfileUpdateForm(obj=user_db)
 
   if form.validate_on_submit():
+    send_verification = not user_db.token or user_db.email != form.email.data
     form.populate_obj(user_db)
+    if send_verification:
+      user_db.verified = False
+      task.verify_email_notification(user_db)
     user_db.put()
     return flask.redirect(flask.url_for('pages.welcome'))
 

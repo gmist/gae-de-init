@@ -14,3 +14,4 @@ class ConfigUpdateForm(wtf.Form):
   flask_secret_key = wtf.StringField('Secret Key', [wtf.validators.optional()], filters=[util.strip_filter])
   notify_on_new_user = wtf.BooleanField('Send an email notification when a user signs up')
   yandex_metrika_counter_number = wtf.StringField('Counter number', filters=[util.strip_filter])
+  verify_email = wtf.BooleanField('Verify user emails')

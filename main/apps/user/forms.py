@@ -25,6 +25,7 @@ class UserUpdateForm(wtf.Form):
     )
   admin = wtf.BooleanField('Admin')
   active = wtf.BooleanField('Active')
+  verified = wtf.BooleanField('Verified')
   permissions = wtf.SelectMultipleField(
       'Permissions',
       filters=[util.sort_filter],

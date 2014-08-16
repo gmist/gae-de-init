@@ -15,6 +15,8 @@ class User(base.Base):
   active = ndb.BooleanProperty(default=True)
   admin = ndb.BooleanProperty(default=False)
   permissions = ndb.StringProperty(repeated=True)
+  token = ndb.StringProperty(default='')
+  verified = ndb.BooleanProperty(default=False)
 
   def has_permission(self, perm):
     return self.admin or perm in self.permissions
@@ -27,10 +29,11 @@ class User(base.Base):
   avatar_url = property(avatar_url_size)
 
   @classmethod
-  def get_dbs(cls, admin=None, active=None, permissions=None, **kwargs):
+  def get_dbs(cls, admin=None, active=None, verified=None, permissions=None, **kwargs):
     return super(User, cls).get_dbs(
         admin=admin or util.param('admin', bool),
         active=active or util.param('active', bool),
+        verified=verified or util.param('verified', bool),
         permissions=permissions or util.param('permissions', list),
         **kwargs
       )
@@ -53,5 +56,7 @@ user_fields = funcy.merge(
         'email': fields.String,
         'name': fields.String,
         'username': fields.String,
-        'permissions': fields.List(fields.String)
+        'permissions': fields.List(fields.String),
+        'token': fields.String,
+        'verified': fields.Boolean,
   })
