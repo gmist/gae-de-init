@@ -28,7 +28,7 @@ def user_list():
   permissions = list(forms.UserUpdateForm._permission_choices)
   permissions += util.param('permissions', list) or []
   return flask.render_template(
-      'user/admin/user_list.html',
+      'user/admin/list.html',
       html_class='user-list',
       title='User List',
       user_dbs=user_dbs,
@@ -66,7 +66,7 @@ def user_update(user_id):
         ))
 
   return flask.render_template(
-      'user/admin/user_update.html',
+      'user/admin/update.html',
       title=user_db.name,
       html_class='user-update',
       form=form,
@@ -139,7 +139,7 @@ def merge():
       )
 
   return flask.render_template(
-      'user/admin/user_merge.html',
+      'user/admin/merge.html',
       title='Merge Users',
       html_class='user-merge',
       user_dbs=user_dbs,
