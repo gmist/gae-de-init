@@ -68,7 +68,7 @@ def signin():
       if not hasattr(auth_db, field) or not getattr(auth_db, field):
         break
     else:
-      provider['signin_url'] = flask.url_for('auth.%s.signin' % name, next=next_url)
+      provider['signin_url'] = flask.url_for('auth.p.%s.signin' % name, next=next_url)
       auth_providers.append(provider)
 
   return flask.render_template(

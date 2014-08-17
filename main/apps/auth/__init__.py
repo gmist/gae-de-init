@@ -35,9 +35,6 @@ def register_providers(app):
     bp = werk_utils.import_string('%s.views.bp' % pkg, True)
     if bp:
       app.register_blueprint(bp)
-    bps = werk_utils.import_string('%s.views.bps' % pkg, True)
-    if bps:
-      app.register_blueprint(bps)
 
 
 def app_init(app):

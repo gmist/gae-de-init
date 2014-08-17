@@ -195,7 +195,7 @@ def get_module_obj(pkg_views, obj_name):
 def register_apps(app):
   for pkg in werk_utils.find_modules('apps', True):
     pkg_views = '%s.views' % pkg
-    objs = [get_module_obj(pkg_views, obj) for obj in ['bpa', 'bp', 'bps']]
+    objs = [get_module_obj(pkg_views, obj) for obj in ['bpa', 'bp']]
     funcy.walk(funcy.silent(app.register_blueprint), objs)
     app_init = get_module_obj(pkg, 'app_init')
     if app_init:

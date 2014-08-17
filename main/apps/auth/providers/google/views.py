@@ -11,30 +11,19 @@ from .import CONFIG
 
 PROVIDER_NAME = CONFIG['name']
 
-bp = flask.Blueprint(
-    'auth.%s' % PROVIDER_NAME,
-    __name__,
-    url_prefix='/auth',
-    template_folder='templates',
-  )
-
-bps = flask.Blueprint(
-    'auth.%s.service' % PROVIDER_NAME,
-    __name__,
-    url_prefix='/_s/callback/%s' % PROVIDER_NAME,
-  )
+bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 
 
-@bp.route('/signin/%s/' % PROVIDER_NAME)
+@bp.route('/signin/')
 def signin():
   helpers.save_request_params()
   google_url = users.create_login_url(
-      flask.url_for('auth.%s.service.authorized' % PROVIDER_NAME)
+      flask.url_for('auth.p.%s.authorized' % PROVIDER_NAME)
     )
   return flask.redirect(google_url)
 
 
-@bps.route('/authorized/')
+@bp.route('/authorized/')
 def authorized():
   google_user = users.get_current_user()
   if google_user is None:

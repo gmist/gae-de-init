@@ -57,3 +57,12 @@ def signin_user_db(user_db):
     return flask.redirect(auth_params['next'])
   flask.flash('Sorry, but you could not sign in.', category='danger')
   return flask.redirect(flask.url_for('auth.signin'))
+
+
+def make_provider_bp(provider_name, module_name):
+  return flask.Blueprint(
+      'auth.p.%s' % provider_name,
+      module_name,
+      url_prefix='/auth/p/%s' % provider_name,
+      template_folder='templates',
+    )

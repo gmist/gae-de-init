@@ -16,19 +16,7 @@ from .import CONFIG
 PROVIDERS_DB = AuthProviders.get_master_db()
 PROVIDER_NAME = CONFIG['name']
 
-bp = flask.Blueprint(
-    'auth.%s' % PROVIDER_NAME,
-    __name__,
-    url_prefix='/auth',
-    template_folder='templates',
-  )
-
-bps = flask.Blueprint(
-    'auth.%s.service' % PROVIDER_NAME,
-    __name__,
-    url_prefix='/_s/callback/%s' % PROVIDER_NAME,
-  )
-
+bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 provider_oauth = oauth.OAuth()
 
 provider = provider_oauth.remote_app(
@@ -56,7 +44,7 @@ def odnoklassniki_oauth_sig(data, client_secret):
   return hashlib.md5(''.join(check_list) + suffix).hexdigest()
 
 
-@bps.route('/oauth-authorized/')
+@bp.route('/authorized/')
 @provider.authorized_handler
 def authorized(resp):
   if resp is None:
@@ -102,12 +90,12 @@ def get_odnoklassniki_oauth_token():
     return flask.session.get('oauth_token')
 
 
-@bp.route('/signin/%s/' % PROVIDER_NAME)
+@bp.route('/signin/')
 def signin():
   helpers.save_request_params()
   return provider.authorize(
       callback=flask.url_for(
-          'auth.%s.service.authorized' % PROVIDER_NAME,
+          'auth.p.%s.authorized' % PROVIDER_NAME,
           next=util.get_next_url(),
           _external=True,
         )
