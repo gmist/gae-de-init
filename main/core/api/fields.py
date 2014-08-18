@@ -1,20 +1,7 @@
 # coding: utf-8
 import urllib
-from google.appengine.ext import ndb
 
-import funcy
 from flask.ext.restful import fields
-
-
-is_boolean = funcy.isa(ndb.BooleanProperty)
-is_blob = funcy.isa(ndb.BlobProperty)
-is_blob_key = funcy.isa(ndb.BlobKey)
-is_float = funcy.isa(ndb.FloatProperty)
-is_date_time = funcy.isa(ndb.DateTimeProperty, ndb.DateProperty)
-is_geo_pt = funcy.isa(ndb.GeoPt)
-is_integer = funcy.isa(ndb.IntegerProperty)
-is_key = funcy.isa(ndb.Key)
-is_string = funcy.isa(ndb.StringProperty, ndb.TextProperty)
 
 
 class GeoPt(fields.Raw):
