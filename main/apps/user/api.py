@@ -4,8 +4,8 @@ from flask.ext import restful
 import flask
 
 from apps import auth
-from core import api
 from core import util
+from core.api import helpers
 import models
 
 
@@ -16,25 +16,24 @@ class UsersAPI(restful.Resource):
     if user_keys:
       user_db_keys = [ndb.Key(urlsafe=k) for k in user_keys]
       user_dbs = ndb.get_multi(user_db_keys)
-      return api.make_response(user_dbs, models.user_fields)
+      return helpers.make_response(user_dbs, models.user_fields)
 
     user_dbs, next_cursor, prev_cursor = models.User.get_dbs()
-    return api.make_response(
+    return helpers.make_response(
         user_dbs, models.user_fields, next_cursor, prev_cursor)
 
   @auth.admin_required
   def delete(self):
     user_keys = util.param('user_keys', list)
-    if user_keys:
-      user_db_keys = [ndb.Key(urlsafe=k) for k in user_keys]
-      delete_user_dbs(user_db_keys)
-      return flask.jsonify({
-          'result': user_keys,
-          'status': 'success',
-        })
+    if not user_keys:
+      helpers.make_not_found_exception(
+          'User(s) %s not found' % user_keys
+      )
+    user_db_keys = [ndb.Key(urlsafe=k) for k in user_keys]
+    delete_user_dbs(user_db_keys)
     return flask.jsonify({
-        'result': 'User(s) %s not found' % user_keys,
-        'status': 'fail',
+        'result': user_keys,
+        'status': 'success',
       })
 
 
@@ -43,22 +42,23 @@ class UserAPI(restful.Resource):
   def get(self, key):
     user_db = ndb.Key(urlsafe=key).get()
     if not user_db:
-      flask.abort(404)
-    return api.make_response(user_db, models.user_fields)
+      helpers.make_not_found_exception(
+          'User %s not found' % key
+        )
+    return helpers.make_response(user_db, models.user_fields)
 
   @auth.admin_required
   def delete(self, key):
     user_db = ndb.Key(urlsafe=key).get()
-    if user_db:
-      user_db.key.delete()
-      return flask.jsonify({
-          'result': key,
-          'status': 'success',
-        })
+    if not user_db:
+      helpers.make_not_found_exception(
+          'User %s not found' % key
+        )
+    user_db.key.delete()
     return flask.jsonify({
-        'result': 'User %s not found' % key,
-        'status': 'fail',
-    })
+        'result': key,
+        'status': 'success',
+      })
 
 
 @ndb.transactional(xg=True)

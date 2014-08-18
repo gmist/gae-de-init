@@ -1,16 +1,18 @@
 # coding: utf-8
-
 from flask.ext import restful
 
-from core import api
 from apps import auth
+from core.api import helpers
 import models
 
 
 class ConfigAPI(restful.Resource):
   @auth.admin_required
   def get(self):
-    return api.make_response(models.Config.get_master_db(), models.config_fields)
+    return helpers.make_response(
+        models.Config.get_master_db(),
+        models.config_fields
+      )
 
 
 API = [

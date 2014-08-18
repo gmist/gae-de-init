@@ -33,7 +33,7 @@ config_fields = funcy.merge(base.base_fields, {
     'brand_name': fields.String,
     'feedback_email': fields.String,
     'flask_secret_key': fields.String,
-    'notify_on_new_user': fields.String,
+    'notify_on_new_user': fields.Boolean,
     'yandex_metrika_counter_number': fields.String,
     'verify_email': fields.Boolean,
   })

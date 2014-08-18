@@ -1,10 +1,10 @@
 # coding: utf-8
 import logging
 
-from flask.ext import restful
 import flask
 import funcy
 
+from core.api import helpers as restful
 from core import util
 import config
 
@@ -27,7 +27,7 @@ if config.DEVELOPMENT:
 util.register_apps(app)
 
 api = restful.Api(app)
-util.register_api(api)
+restful.register_api(api)
 
 
 ###############################################################################
@@ -49,14 +49,8 @@ def error_handler(e):
     e.code = 500
     e.name = 'Internal Server Error'
 
-  if flask.request.path.startswith('/_s/'):
-    return util.jsonpify({
-        'status': 'error',
-        'error_code': e.code,
-        'error_name': util.slugify(e.name),
-        'error_message': e.name,
-        'error_class': e.__class__.__name__,
-      }), e.code
+  if flask.request.path.startswith('/api/'):
+    return api.handle_error(e)
 
   return flask.render_template(
       'error.html',

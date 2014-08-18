@@ -1,5 +1,6 @@
 # coding: utf-8
 import copy
+from core.api.helpers import make_response
 from flask.ext import restful
 from flask.ext.restful import fields
 import funcy
@@ -25,7 +26,7 @@ class AuthProvidersAPI(restful.Resource):
         except AttributeError:
           pass
     provider_fields = funcy.merge(base.base_fields, provider_fields)
-    return api.make_response(auth_db, provider_fields)
+    return make_response(auth_db, provider_fields)
 
 
 API = [

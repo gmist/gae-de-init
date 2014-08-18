@@ -6,9 +6,10 @@ import urllib
 
 from google.appengine.datastore.datastore_query import Cursor
 from google.appengine.ext import ndb
+
+from werkzeug import utils as w_utils
 import flask
 import funcy
-from werkzeug import utils as werk_utils
 
 
 ###############################################################################
@@ -189,36 +190,17 @@ def update_query_argument(name, value=None, ignore='cursor', is_list=False):
 
 
 def get_module_obj(pkg_views, obj_name):
-  return werk_utils.import_string('%s.%s' %(pkg_views, obj_name), True)
+  return w_utils.import_string('%s.%s' %(pkg_views, obj_name), True)
 
 
 def register_apps(app):
-  for pkg in werk_utils.find_modules('apps', True):
+  for pkg in w_utils.find_modules('apps', True):
     pkg_views = '%s.views' % pkg
     objs = [get_module_obj(pkg_views, obj) for obj in ['bpa', 'bp']]
     funcy.walk(funcy.silent(app.register_blueprint), objs)
     app_init = get_module_obj(pkg, 'app_init')
     if app_init:
       app_init(app)
-
-
-def register_api(api):
-  for pkg in werk_utils.find_modules('apps', True):
-    pkg_api = '%s.api' % pkg
-    resources = get_module_obj(pkg_api, 'API')
-    if not resources:
-      continue
-    for resource in resources:
-      register_api_resource(api, resource)
-
-def register_api_resource(api, resource):
-  if funcy.is_seqcoll(resource):
-    cls, url, endpoint = (
-        funcy.first(resource),
-        funcy.second(resource),
-        funcy.nth(2, resource),
-      )
-    api.add_resource(cls, url, endpoint=endpoint)
 
 
 ###############################################################################
