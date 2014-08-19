@@ -1,6 +1,5 @@
 # coding: utf-8
 from google.appengine.ext import ndb
-from flask.ext.restful import fields
 
 from core.api import fields as cfields
 from core import util

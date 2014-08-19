@@ -1,6 +1,7 @@
 # coding: utf-8
 import flask
 
+from core import util
 import config
 
 
@@ -16,7 +17,15 @@ bp = flask.Blueprint(
 ###############################################################################
 @bp.route('/')
 def welcome():
-  return flask.render_template('pages/welcome.html', html_class='welcome')
+  return flask.render_template(
+      'pages/welcome.html',
+      html_class='welcome',
+      meta=util.make_meta(
+          description='''
+              gae-init is the easiest way to start new web
+              applications on Google App Engine.'''
+        )
+    )
 
 
 ###############################################################################

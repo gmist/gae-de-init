@@ -130,6 +130,25 @@ def check_form_fields(*fields):
   return all(fields_data)
 
 
+def make_meta(keywords=None, description=None, author=None):
+  meta = {}
+  if not keywords and description:
+    keywords = description
+  if keywords:
+    if isinstance(keywords, (str, unicode)):
+      keywords = re.sub(r'[\W_]+', ', ', keywords)
+    if funcy.is_seqcoll(keywords):
+      keywords = u', '.join(keywords)
+    meta['keywords'] = keywords
+  if description:
+    if isinstance(description, (str, unicode)):
+      description = description.strip()
+    meta['description'] = description
+  if author:
+    meta['author'] = author
+  return meta
+
+
 def generate_next_url(next_cursor, base_url=None, cursor_name='cursor'):
   '''Substitutes or alters the current request URL with a new cursor parameter
   for next page of results
