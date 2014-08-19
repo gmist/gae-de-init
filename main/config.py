@@ -51,14 +51,16 @@ SCRIPTS = [
         'ext/js/bootstrap/dropdown.js',
         'ext/js/bootstrap/tooltip.js',
       ]),
-    ('scripts', [
-        'src/script/common/service.coffee',
-        'src/script/common/util.coffee',
-        'src/script/site/app.coffee',
-        'src/script/site/admin.coffee',
-        'src/script/site/feedback.coffee',
-        'src/script/site/profile.coffee',
-        'src/script/site/signin.coffee',
-        'src/script/site/user.coffee',
+    ('core', [
+        'src/script/core/service.coffee',
+        'src/script/core/util.coffee',
+      ]),
+    ('apps', [
+        'src/script/apps/admin/admin.coffee',
+        'src/script/apps/auth/signin.coffee',
+        'src/script/apps/feedback/admin.coffee',
+        'src/script/apps/user/admin.coffee',
+        'src/script/apps/user/profile.coffee',
+        'src/script/apps/init.coffee',
       ]),
   ]
