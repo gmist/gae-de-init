@@ -29,8 +29,8 @@
         <button type="submit" class="btn btn-primary btn-lg btn-block btn-loading" data-loading-text="Updating..">
           Update
         </button>
-        <div class="text-center">or</div>
         # if form.email.data
+          <div class="text-center">or</div>
           <a href="mailto:{{ form.email.data }}?subject=Re: {{ form.subject.data }}&body=>{{ form.message.data }}"
              class="btn btn-lg btn-block btn-info">
             Reply by your default email client
