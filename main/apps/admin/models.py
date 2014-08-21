@@ -15,6 +15,7 @@ class Config(base.Base):
       'info', 'warning', 'success', 'danger',
     ])
   brand_name = ndb.StringProperty(default=config.APPLICATION_ID)
+  check_unique_email = ndb.BooleanProperty(default=True)
   feedback_email = ndb.StringProperty(default='')
   flask_secret_key = ndb.StringProperty(default=util.uuid())
   notify_on_new_user = ndb.BooleanProperty(default=True)
@@ -31,6 +32,7 @@ config_fields = funcy.merge(base.base_fields, {
     'announcement_html': fields.String,
     'announcement_type': fields.String,
     'brand_name': fields.String,
+    'check_unique_email': fields.Boolean,
     'feedback_email': fields.String,
     'flask_secret_key': fields.String,
     'notify_on_new_user': fields.Boolean,
