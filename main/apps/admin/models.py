@@ -18,8 +18,8 @@ class Config(base.Base):
   feedback_email = ndb.StringProperty(default='')
   flask_secret_key = ndb.StringProperty(default=util.uuid())
   notify_on_new_user = ndb.BooleanProperty(default=True)
-  yandex_metrika_counter_number = ndb.StringProperty(default='')
   verify_email = ndb.BooleanProperty(default=True)
+  yandex_metrika_counter_number = ndb.StringProperty(default='')
 
   @classmethod
   def get_master_db(cls):
@@ -34,6 +34,6 @@ config_fields = funcy.merge(base.base_fields, {
     'feedback_email': fields.String,
     'flask_secret_key': fields.String,
     'notify_on_new_user': fields.Boolean,
-    'yandex_metrika_counter_number': fields.String,
     'verify_email': fields.Boolean,
+    'yandex_metrika_counter_number': fields.String,
   })
