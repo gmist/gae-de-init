@@ -4,7 +4,9 @@ from google.appengine.ext import ndb
 from flask.ext.restful import fields
 import funcy
 
-from core import base, util
+from core import base
+from core import util
+import config
 
 
 class User(base.Base):
@@ -43,8 +45,14 @@ class User(base.Base):
     if self_db is None:
       return cls.get_by('username', username) is None
     user_dbs, _, _ = util.get_dbs(cls.query(), username=username, limit=2)
-    c = len(user_dbs)
-    return not (c == 2 or c == 1 and self_db.key != user_dbs[0].key)
+    return not user_dbs or self_db in user_dbs and not user_dbs[1:]
+
+  @classmethod
+  def is_email_available(cls, email, self_db=None):
+   if not config.CONFIG_DB.check_unique_email:
+     return True
+   user_dbs, _, _ = util.get_dbs(cls.query(), email=email, verified=True, limit=2)
+   return not user_dbs or self_db in user_dbs and not user_dbs[1:]
 
 
 user_fields = funcy.merge(

@@ -157,6 +157,7 @@ def merge_user_dbs(user_db, deprecated_keys):
   for deprecated_db in deprecated_dbs:
     deprecated_db.auth_ids = []
     deprecated_db.active = False
+    deprecated_db.verified = False
     if not deprecated_db.username.startswith('_'):
       deprecated_db.username = '_%s' % deprecated_db.username
   ndb.put_multi(deprecated_dbs)
@@ -169,13 +170,18 @@ def profile():
   form = forms.ProfileUpdateForm(obj=user_db)
 
   if form.validate_on_submit():
-    send_verification = not user_db.token or user_db.email != form.email.data
-    form.populate_obj(user_db)
-    if send_verification:
-      user_db.verified = False
-      task.verify_email_notification(user_db)
-    user_db.put()
-    return flask.redirect(flask.url_for('pages.welcome'))
+    email = form.email.data
+    if email and not user_db.is_email_available(email, user_db):
+      form.email.errors.append('This email is already taken.')
+
+    if not form.errors:
+      send_verification = not user_db.token or user_db.email != email
+      form.populate_obj(user_db)
+      if send_verification:
+        user_db.verified = False
+        task.verify_email_notification(user_db)
+      user_db.put()
+      return flask.redirect(flask.url_for('pages.welcome'))
 
   return flask.render_template(
       'user/profile.html',
