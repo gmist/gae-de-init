@@ -9,6 +9,7 @@ from core import util
 
 
 class Feedback(base.Base):
+  name = ndb.StringProperty()
   subject = ndb.StringProperty()
   message = ndb.TextProperty()
   email = ndb.StringProperty()
@@ -24,6 +25,7 @@ class Feedback(base.Base):
       )
 
 feedback_fields = funcy.merge(base.base_fields, {
+    'name': fields.String,
     'subject': fields.String,
     'message': fields.String,
     'email': fields.String,

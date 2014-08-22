@@ -4,6 +4,11 @@ from core import util
 
 
 class FeedbackForm(wtf.Form):
+  name = wtf.StringField(
+      'Name',
+      [wtf.validators.required()],
+      filters=[util.strip_filter]
+    )
   subject = wtf.StringField(
       'Subject',
       [wtf.validators.required()],

@@ -78,7 +78,8 @@ def index():
     body = '%s\n\n%s' % (form.message.data, form.email.data)
     kwargs = {'reply_to': form.email.data} if form.email.data else {}
     task.send_mail_notification(form.subject.data, body, **kwargs)
-    flask.flash('Thank you for your feedback!', category='success')
+    flask.flash(
+        u'%s, thank you for your feedback!' % form.name.data, category='success')
     return flask.redirect(flask.url_for('pages.welcome'))
 
   return flask.render_template(

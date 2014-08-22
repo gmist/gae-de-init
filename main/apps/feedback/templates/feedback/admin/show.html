@@ -15,12 +15,18 @@
     <div class="row">
       <div class="col-md-5 col-sm-6">
         {{ form.csrf_token }}
-        {{ forms.text_field(form.subject, readonly=1) }}
+        {{ forms.email_field(form.name, readonly=1) }}
         {{ forms.email_field(form.email, readonly=1) }}
-        {{ forms.textarea_field(form.message, rows=10, readonly=1) }}
+        {{ forms.text_field(form.subject, readonly=1) }}
+        {{ forms.textarea_field(form.message, rows=9, readonly=1) }}
+        # if feedback_db.user
+          <a href="{{url_for('user.update', user_id=feedback_db.user.id())}}" target="_blank">
+            Link to user profile
+          </a>
+        # endif
       </div>
       <div class="col-md-7 col-sm-12">
-        {{ forms.textarea_field(form.comment, rows=17) }}
+        {{ forms.textarea_field(form.comment, rows=20) }}
       </div>
     </div>
     <hr>
