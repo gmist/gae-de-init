@@ -44,15 +44,19 @@ class User(base.Base):
   def is_username_available(cls, username, self_db=None):
     if self_db is None:
       return cls.get_by('username', username) is None
-    user_dbs, _, _ = util.get_dbs(cls.query(), username=username, limit=2)
+    user_dbs, _, _ = util.get_dbs(
+        cls.query(), username=username, limit=2, keys_only=True
+      )
     return not user_dbs or self_db in user_dbs and not user_dbs[1:]
 
   @classmethod
   def is_email_available(cls, email, self_db=None):
-   if not config.CONFIG_DB.check_unique_email:
-     return True
-   user_dbs, _, _ = util.get_dbs(cls.query(), email=email, verified=True, limit=2)
-   return not user_dbs or self_db in user_dbs and not user_dbs[1:]
+    if not config.CONFIG_DB.check_unique_email:
+      return True
+    user_dbs, _, _ = util.get_dbs(
+        cls.query(), email=email, verified=True, limit=2, keys_only=True
+      )
+    return not user_dbs or self_db in user_dbs and not user_dbs[1:]
 
 
 user_fields = funcy.merge(
