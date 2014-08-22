@@ -99,6 +99,10 @@ def get_dbs(
   return list(model_dbs), next_cursor, prev_cursor
 
 
+def get_keys(*arg, **kwargs):
+  return get_dbs(*arg, keys_only=True, **kwargs)
+
+
 @ndb.transactional(xg=True)
 def delete_dbs(db_keys):
   ndb.delete_multi(db_keys)
