@@ -27,7 +27,7 @@ def param(name, cast=None):
 
   if cast and value is not None:
     if cast is bool:
-      return value.lower() in ['true', 'yes', '1', '']
+      return value.lower() in ['true', 'yes', 'y', '1', '']
     if cast is list:
       return value.split(',') if len(value) > 0 else []
     return cast(value)
@@ -42,7 +42,7 @@ def get_referrer_url():
 
 
 def get_next_url(option_url=None, skip_referrer=False):
-  next_url = param('next')
+  next_url = param('next') or param('next_url')
   if next_url:
     return next_url
   if not skip_referrer:

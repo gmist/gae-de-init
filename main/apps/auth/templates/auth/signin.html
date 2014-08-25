@@ -19,7 +19,10 @@
       # endfor
 
       <div class="checkbox remember">
-        <label><input type="checkbox" checked> Keep me signed in</label>
+        <label>
+          <input type="checkbox" {% if session.get('auth-params').remember %}checked{% endif %}>
+          Keep me signed in
+        </label>
       </div>
     </div>
   </div>
