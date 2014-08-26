@@ -5,6 +5,7 @@ from apps.auth.login_manager import current_user_db, is_logged_in
 import flask
 
 from app import app
+import config
 
 _signals = flask.signals.Namespace()
 permission_registered = _signals.signal('permission-registered')
@@ -69,3 +70,11 @@ def permission_required(permission=None, methods=None):
       return flask.abort(403)
     return decorated_function
   return permission_decorator
+
+
+def cron_required(f):
+  @functools.wraps(f)
+  def decorated_function(*args, **kws):
+    if flask.request.headers.get('X-AppEngine-Cron', False) or config.DEBUG:
+      return f(*args, **kws)
+  return decorated_function
