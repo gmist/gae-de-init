@@ -64,3 +64,9 @@ if config.PRODUCTION:
   @app.errorhandler(Exception)
   def production_error_handler(e):
     return error_handler(e)
+
+
+if config.CONFIG_DB.send_error_reports:
+  import logging
+  from google.appengine.ext import ereporter
+  ereporter.register_logger()

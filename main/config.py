@@ -16,7 +16,9 @@ except (ImportError, AttributeError):
   pass
 else:
   from datetime import datetime
+  CURRENT_APPLICATION_ID = os.environ['APPLICATION_ID']
   CURRENT_VERSION_ID = os.environ.get('CURRENT_VERSION_ID')
+  CURRENT_VERSION_MAJOR, CURRENT_VERSION_MINOR = CURRENT_VERSION_ID.rsplit('.', 1)
   CURRENT_VERSION_NAME = CURRENT_VERSION_ID.split('.')[0]
   CURRENT_VERSION_TIMESTAMP = long(CURRENT_VERSION_ID.split('.')[1]) >> 28
   if DEVELOPMENT:

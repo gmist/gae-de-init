@@ -2,6 +2,7 @@
 from werkzeug import utils as werk_utils
 
 from decorators import admin_required
+from decorators import cron_required
 from decorators import login_required
 from decorators import permission_required
 

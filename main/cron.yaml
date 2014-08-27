@@ -1,0 +1,4 @@
+cron:
+- description: Daily error report
+  url: /_s/ereporter/
+  schedule: every day 00:00
