@@ -1,31 +1,33 @@
 # coding: utf-8
 from flask.ext import wtf
+import wtforms
+
 from core import util
 
 
 class FeedbackForm(wtf.Form):
-  name = wtf.StringField(
+  name = wtforms.StringField(
       'Name',
-      [wtf.validators.required()],
+      [wtforms.validators.required()],
       filters=[util.strip_filter]
     )
-  subject = wtf.StringField(
+  subject = wtforms.StringField(
       'Subject',
-      [wtf.validators.required()],
+      [wtforms.validators.required()],
       filters=[util.strip_filter],
     )
-  message = wtf.TextAreaField(
+  message = wtforms.TextAreaField(
       'Message',
-      [wtf.validators.required()],
+      [wtforms.validators.required()],
       filters=[util.strip_filter],
     )
-  email = wtf.StringField(
+  email = wtforms.StringField(
       'Your email (optional)',
-      [wtf.validators.optional(), wtf.validators.email()],
+      [wtforms.validators.optional(), wtforms.validators.email()],
       filters=[util.email_filter],
     )
-  comment = wtf.TextAreaField(
+  comment = wtforms.TextAreaField(
       'Comment',
-      [wtf.validators.optional()],
+      [wtforms.validators.optional()],
       filters=[util.strip_filter]
     )

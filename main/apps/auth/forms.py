@@ -1,5 +1,6 @@
 # coding: utf-8
 from flask.ext import wtf
+import wtforms
 
 from core import util
 
@@ -12,6 +13,6 @@ class AuthProvidersForm(wtf.Form):
         setattr(
             cls,
             '%s' % field,
-            wtf.StringField(label, filters=[util.strip_filter])
+            wtforms.StringField(label, filters=[util.strip_filter])
           )
     return cls
