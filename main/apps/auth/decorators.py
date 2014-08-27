@@ -73,6 +73,7 @@ def permission_required(permission=None, methods=None):
 
 
 def cron_required(f):
+  decorator_order_guard(f, 'auth.cron_required')
   @functools.wraps(f)
   def decorated_function(*args, **kws):
     if flask.request.headers.get('X-AppEngine-Cron', False) or config.DEBUG:
