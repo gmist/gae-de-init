@@ -35,7 +35,6 @@ def send_reports():
   rg = report_generator.ReportGenerator()
   rg.sender = config.CONFIG_DB.feedback_email
   rg.version_filter = 'all'
-  rg.to = None
   rg.yesterday = datetime.date.today() - datetime.timedelta(days=1)
   rg.app_id = config.APPLICATION_ID
   rg.major_version = config.CURRENT_VERSION_MAJOR
