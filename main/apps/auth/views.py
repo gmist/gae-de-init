@@ -4,7 +4,6 @@ from flask.ext import login
 import flask
 
 from apps import auth
-from apps.auth import PROVIDERS_CONFIG
 from apps.auth import forms
 from apps.auth import models
 from core import util
@@ -57,13 +56,15 @@ def admin_index():
 @bp.route('/login/')
 @bp.route('/signin/')
 def signin():
+  if auth.current_user_db():
+    return flask.redirect(flask.url_for('pages.welcome'))
+
   next_url = util.get_next_url()
   if flask.url_for('auth.signin') in next_url:
     next_url = flask.url_for('pages.welcome')
-
   auth_db = models.AuthProviders.get_master_db()
   auth_providers = []
-  for name, provider in PROVIDERS_CONFIG.iteritems():
+  for name, provider in auth.PROVIDERS_CONFIG.iteritems():
     for field in provider.get('key_fields', {}).iterkeys():
       if not hasattr(auth_db, field) or not getattr(auth_db, field):
         break
