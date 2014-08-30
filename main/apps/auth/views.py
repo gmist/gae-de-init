@@ -58,10 +58,8 @@ def admin_index():
 def signin():
   if auth.current_user_db():
     return flask.redirect(flask.url_for('pages.welcome'))
-
   next_url = util.get_next_url()
-  if flask.url_for('auth.signin') in next_url:
-    next_url = flask.url_for('pages.welcome')
+
   auth_db = models.AuthProviders.get_master_db()
   auth_providers = []
   for name, provider in auth.PROVIDERS_CONFIG.iteritems():

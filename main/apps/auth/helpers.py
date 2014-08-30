@@ -64,7 +64,7 @@ def signin_user_db(user_db):
     flask.flash('Hello %s, welcome to %s.' % (
         user_db.name, config.CONFIG_DB.brand_name,
       ), category='success')
-    return flask.redirect(auth_params['next'])
+    return flask.redirect(util.get_next_url(auth_params['next']))
   flask.flash('Sorry, but you could not sign in.', category='danger')
   return flask.redirect(flask.url_for('auth.signin'))
 
