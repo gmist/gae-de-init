@@ -64,4 +64,5 @@ def retrieve_user_from_facebook(response):
       response['name'],
       response.get('username', response['name']),
       response.get('email', ''),
+      verified=bool(response.get('email', ''))
     )

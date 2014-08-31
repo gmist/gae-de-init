@@ -57,7 +57,8 @@ def retrieve_user_from_github(response):
     return user_db
   return helpers.create_user_db(
       auth_id,
-      response['name'] or response['login'],
-      response['login'],
-      response['email'] or '',
+      response.get('name', response.get('login')),
+      response.get('login'),
+      response.get('email', ''),
+      verified=bool(response.get('email', ''))
     )

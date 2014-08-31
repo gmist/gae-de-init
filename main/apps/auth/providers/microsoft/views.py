@@ -74,5 +74,6 @@ def retrieve_user_from_microsoft(response):
       auth_id,
       response['name'] or '',
       email,
-      email=email,
+      email,
+      verified=bool(email)
     )

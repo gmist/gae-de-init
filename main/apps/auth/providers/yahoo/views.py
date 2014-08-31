@@ -84,15 +84,17 @@ def retrieve_user_from_yahoo(response):
   if user_db:
     return user_db
   if response.get('givenName') or response.get('familyName'):
-    user_name = ' '.join((response['givenName'], response['familyName'])).strip()
+    full_name = ' '.join((response['givenName'], response['familyName'])).strip()
   else:
-    user_name = response['nickname']
+    full_name = response['nickname']
   emails = [
       email for email in response.get('emails', []) if email.get('handle')]
   emails.sort(key=lambda e: e.get('primary', False))
+  email = emails[0]['handle'] if emails else ''
   return helpers.create_user_db(
       auth_id,
-      user_name,
-      user_name,
-      emails[0]['handle'] if emails else ''
+      full_name,
+      response['nickname'],
+      email,
+      verified=bool(email)
     )

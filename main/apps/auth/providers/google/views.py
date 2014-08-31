@@ -48,5 +48,6 @@ def retrieve_user_from_google(google_user):
       re.sub(r'_+|-+|\.+', ' ', google_user.email().split('@')[0]).title(),
       google_user.email(),
       google_user.email(),
+      verified=True,
       admin=users.is_current_user_admin(),
     )
