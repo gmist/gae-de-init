@@ -49,6 +49,7 @@ def admin_show(feedback_id):
     feedback_db.is_read = True
     feedback_db.put()
   form = forms.FeedbackForm(obj=feedback_db)
+  del form.recaptcha
   if form.validate_on_submit():
     form.populate_obj(feedback_db)
     feedback_db.put()
@@ -70,6 +71,8 @@ def index():
     return flask.abort(418)
 
   form = forms.FeedbackForm(obj=auth.current_user_db())
+  if not config.CONFIG_DB.has_anonymous_recaptcha:
+    del form.recaptcha
   if form.validate_on_submit():
     feedback_obj = models.Feedback()
     form.populate_obj(feedback_obj)

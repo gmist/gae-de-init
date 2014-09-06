@@ -28,6 +28,7 @@
           {{forms.text_field(form.subject)}}
         # endif
         {{forms.textarea_field(form.message, rows=8)}}
+        {{forms.recaptcha_field(form.recaptcha)}}
         <button type="submit" class="btn btn-primary btn-block btn-loading" data-loading-text="Sending Feedback..">
           Send Feedback
         </button>

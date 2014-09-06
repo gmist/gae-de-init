@@ -10,6 +10,9 @@ class ConfigUpdateForm(wtf.Form):
   analytics_id = wtforms.StringField(
       'Tracking ID', filters=[util.strip_filter]
     )
+  anonymous_recaptcha = wtforms.BooleanField(
+      'Use reCAPTCHA in forms for unauthorized users'
+    )
   announcement_html = wtforms.TextAreaField(
       'Announcement HTML', filters=[util.strip_filter]
     )

@@ -10,6 +10,7 @@ import config
 
 class Config(base.Base):
   analytics_id = ndb.StringProperty(default='')
+  anonymous_recaptcha = ndb.BooleanProperty(default=False)
   announcement_html = ndb.TextProperty(default='')
   announcement_type = ndb.StringProperty(default='info', choices=[
       'info', 'warning', 'success', 'danger',
@@ -28,6 +29,14 @@ class Config(base.Base):
   @classmethod
   def get_master_db(cls):
     return cls.get_or_insert('master')
+
+  @property
+  def has_anonymous_recaptcha(self):
+    return bool(
+        self.anonymous_recaptcha and
+        self.recaptcha_private_key and
+        self.recaptcha_public_key
+    )
 
 
 config_fields = funcy.merge(base.base_fields, {

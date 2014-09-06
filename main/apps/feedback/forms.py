@@ -26,6 +26,7 @@ class FeedbackForm(wtf.Form):
       [wtforms.validators.optional(), wtforms.validators.email()],
       filters=[util.email_filter],
     )
+  recaptcha = wtf.RecaptchaField('Are you human?')
   comment = wtforms.TextAreaField(
       'Comment',
       [wtforms.validators.optional()],
