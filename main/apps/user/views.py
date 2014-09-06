@@ -81,7 +81,7 @@ def verify_email(token):
   user_db = auth.current_user_db()
   if user_db.token != token:
     flask.flash('That link is either invalid or expired.', category='danger')
-    return flask.redirect(flask.url_for('user.profile', token=token))
+    return flask.redirect(flask.url_for('user.profile'))
   user_db.verified = True
   user_db.token = util.uuid()
   user_db.put()
