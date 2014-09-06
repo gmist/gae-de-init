@@ -37,7 +37,7 @@ def create_user_db(auth_id, name, username, email='', verified=False, **props):
       name=name,
       email=email,
       username=new_username,
-      auth_ids=[auth_id],
+      auth_ids=[auth_id] if auth_id else [],
       **props
     )
   user_db.put()
