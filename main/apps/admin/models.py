@@ -19,6 +19,8 @@ class Config(base.Base):
   feedback_email = ndb.StringProperty(default='')
   flask_secret_key = ndb.StringProperty(default=util.uuid())
   notify_on_new_user = ndb.BooleanProperty(default=True)
+  recaptcha_private_key = ndb.StringProperty(default='')
+  recaptcha_public_key = ndb.StringProperty(default='')
   send_error_reports = ndb.BooleanProperty(default=False)
   verify_email = ndb.BooleanProperty(default=True)
   yandex_metrika_counter_number = ndb.StringProperty(default='')
@@ -37,6 +39,8 @@ config_fields = funcy.merge(base.base_fields, {
     'feedback_email': fields.String,
     'flask_secret_key': fields.String,
     'notify_on_new_user': fields.Boolean,
+    'recaptcha_private_key': fields.String,
+    'recaptcha_public_key': fields.String,
     'send_error_reports': fields.Boolean,
     'verify_email': fields.Boolean,
     'yandex_metrika_counter_number': fields.String,

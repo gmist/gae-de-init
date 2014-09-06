@@ -38,6 +38,12 @@ class ConfigUpdateForm(wtf.Form):
   notify_on_new_user = wtforms.BooleanField(
       'Send an email notification when a user signs up'
     )
+  recaptcha_private_key = wtforms.StringField(
+      'Private Key', filters=[util.strip_filter]
+    )
+  recaptcha_public_key = wtforms.StringField(
+      'Public Key', filters=[util.strip_filter]
+    )
   send_error_reports = wtforms.BooleanField('Send daily error reports')
   verify_email = wtforms.BooleanField('Verify user emails')
   yandex_metrika_counter_number = wtforms.StringField(
