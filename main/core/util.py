@@ -44,7 +44,10 @@ def get_referrer_url():
 def get_next_url(next_url='', skip_referrer=False):
   next_url = next_url or param('next') or param('next_url')
   if next_url:
-    if flask.url_for('auth.signin') in next_url:
+    do_not_redirect_urls = [
+        flask.url_for('auth.signin'),
+      ]
+    if any(url in next_url for url in do_not_redirect_urls):
       return flask.url_for('pages.welcome')
     return next_url
   if not skip_referrer:
