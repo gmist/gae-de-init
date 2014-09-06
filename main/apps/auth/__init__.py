@@ -31,6 +31,13 @@ def get_provider_icon(auth_id):
   return 'fa-question'
 
 
+def get_provider_title(auth_id):
+  for name, provider in PROVIDERS_CONFIG.iteritems():
+    if auth_id.startswith(name):
+      return provider.get('title') or provider.get('name').title()
+  return 'Unknown'
+
+
 def register_providers(app):
   for pkg in werk_utils.find_modules('%s.providers' % __package__, True):
     bp = werk_utils.import_string('%s.views.bp' % pkg, True)
@@ -45,5 +52,6 @@ def app_init(app):
 
   register_providers(app)
   app.jinja_env.globals.update(
-      provider_icon=get_provider_icon
+      provider_icon=get_provider_icon,
+      provider_title=get_provider_title,
     )
