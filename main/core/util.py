@@ -63,9 +63,6 @@ def get_next_url(next_url='', skip_referrer=False):
 def get_dbs(
     query, order=None, limit=None, cursor=None, keys_only=None, **filters
   ):
-  '''Retrieves entities from datastore, by applying cursor pagination
-  and equality filters. Returns dbs or keys and more cursor value
-  '''
   limit = limit or flask.current_app.config.get('DEFAULT_DB_LIMIT')
   cursor = Cursor.from_websafe_string(cursor) if cursor else None
   model_class = ndb.Model._kind_map[query.kind]
@@ -157,9 +154,6 @@ def make_meta(keywords=None, description=None, author=None):
 
 
 def generate_next_url(next_cursor, base_url=None, cursor_name='cursor'):
-  '''Substitutes or alters the current request URL with a new cursor parameter
-  for next page of results
-  '''
   if not next_cursor:
     return None
   base_url = base_url or flask.request.base_url
@@ -216,7 +210,7 @@ def update_query_argument(name, value=None, ignore='cursor', is_list=False):
 
 
 def get_module_obj(pkg_views, obj_name):
-  return w_utils.import_string('%s.%s' %(pkg_views, obj_name), True)
+  return w_utils.import_string('%s.%s' % (pkg_views, obj_name), True)
 
 
 def register_apps(app):
