@@ -21,7 +21,7 @@ class Base(ndb.Model):
         query or cls.query(ancestor=ancestor),
         limit=limit or util.param('limit', int),
         cursor=cursor or util.param('cursor'),
-        order=order or util.param('order') or '-created',
+        order=order or util.param('order'),
         **kwargs
       )
 
