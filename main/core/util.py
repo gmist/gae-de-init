@@ -82,11 +82,19 @@ def get_dbs(
       continue
     if funcy.is_seqcoll(filters[prop]):
       for value in filters[prop]:
-        query_reverse = query_reverse.filter(model_class._properties[prop] == value)
-        query_forward = query_forward.filter(model_class._properties[prop] == value)
+        query_reverse = query_reverse.filter(
+            model_class._properties[prop] == value
+          )
+        query_forward = query_forward.filter(
+            model_class._properties[prop] == value
+          )
     else:
-      query_reverse = query_reverse.filter(model_class._properties[prop] == filters[prop])
-      query_forward = query_forward.filter(model_class._properties[prop] == filters[prop])
+      query_reverse = query_reverse.filter(
+          model_class._properties[prop] == filters[prop]
+        )
+      query_forward = query_forward.filter(
+          model_class._properties[prop] == filters[prop]
+        )
 
   model_dbs, next_cursor, more = query_forward.fetch_page(
       limit, start_cursor=cursor, keys_only=keys_only,
@@ -95,7 +103,8 @@ def get_dbs(
       limit, start_cursor=cursor.reversed() if cursor else None, keys_only=True
     )
   next_cursor = next_cursor.urlsafe() if more else None
-  prev_cursor = prev_cursor.reversed().urlsafe() if prev_cursor and cursor else None
+  prev_cursor = prev_cursor.reversed().urlsafe()\
+      if prev_cursor and cursor else None
   return list(model_dbs), next_cursor, prev_cursor
 
 
