@@ -8,8 +8,13 @@
       <small>
         <a href="{{url_for('feedback.admin.list', order='-modified', is_read=False)}}" class="text-muted" title="Back to feedback list"><i class="fa fa-fw fa-chevron-left"></i></a>
       </small>
-      {{title}}
+      {{title}}<br>
     </h1>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>{{feedback_db.subject}}</h2>
+    </div>
   </div>
   <form method="POST" action="" novalidate>
     <div class="row">
@@ -17,7 +22,6 @@
         {{ form.csrf_token }}
         {{ forms.email_field(form.name, readonly=1) }}
         {{ forms.email_field(form.email, readonly=1) }}
-        {{ forms.text_field(form.subject, readonly=1) }}
         {{ forms.textarea_field(form.message, rows=9, readonly=1) }}
         # if feedback_db.user
           <a href="{{url_for('user.update', user_id=feedback_db.user.id())}}" target="_blank">
@@ -26,7 +30,7 @@
         # endif
       </div>
       <div class="col-md-7 col-sm-12">
-        {{ forms.textarea_field(form.comment, rows=20) }}
+        {{ forms.textarea_field(form.comment, rows=16) }}
       </div>
     </div>
     <hr>

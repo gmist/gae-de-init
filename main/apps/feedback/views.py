@@ -76,11 +76,12 @@ def index():
   if form.validate_on_submit():
     feedback_obj = models.Feedback()
     form.populate_obj(feedback_obj)
+    feedback_obj.subject = feedback_obj.message[:48].strip()
     feedback_obj.user = auth.current_user_key()
     feedback_obj.put()
     body = '%s\n\n%s' % (form.message.data, form.email.data)
     kwargs = {'reply_to': form.email.data} if form.email.data else {}
-    task.send_mail_notification(form.subject.data, body, **kwargs)
+    task.send_mail_notification('%s...' % feedback_obj.subject, body, **kwargs)
     flask.flash(
         u'%s, thank you for your feedback!' % form.name.data, category='success')
     return flask.redirect(flask.url_for('pages.welcome'))

@@ -11,11 +11,6 @@ class FeedbackForm(wtf.Form):
       [wtforms.validators.required()],
       filters=[util.strip_filter]
     )
-  subject = wtforms.StringField(
-      'Subject',
-      [wtforms.validators.required()],
-      filters=[util.strip_filter],
-    )
   message = wtforms.TextAreaField(
       'Message',
       [wtforms.validators.required()],

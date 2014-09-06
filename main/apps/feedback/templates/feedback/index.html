@@ -23,11 +23,10 @@
   <div class="row">
     <div class="col-md-8 col-sm-12">
         # if form.name.data
-          {{forms.text_field(form.subject, autofocus=True)}}
+          {{forms.textarea_field(form.message, rows=8, autofocus=True)}}
         # else
-          {{forms.text_field(form.subject)}}
+          {{forms.textarea_field(form.message, rows=8)}}
         # endif
-        {{forms.textarea_field(form.message, rows=8)}}
         {{forms.recaptcha_field(form.recaptcha)}}
         <button type="submit" class="btn btn-primary btn-block btn-loading" data-loading-text="Sending Feedback..">
           Send Feedback
