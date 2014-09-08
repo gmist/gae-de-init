@@ -10,11 +10,11 @@ import config
 
 class Config(base.Base):
   analytics_id = ndb.StringProperty(default='')
-  anonymous_recaptcha = ndb.BooleanProperty(default=False)
   announcement_html = ndb.TextProperty(default='')
   announcement_type = ndb.StringProperty(default='info', choices=[
       'info', 'warning', 'success', 'danger',
     ])
+  anonymous_recaptcha = ndb.BooleanProperty(default=False)
   brand_name = ndb.StringProperty(default=config.APPLICATION_ID)
   check_unique_email = ndb.BooleanProperty(default=True)
   feedback_email = ndb.StringProperty(default='')
@@ -43,6 +43,7 @@ config_fields = funcy.merge(base.base_fields, {
     'analytics_id': fields.String,
     'announcement_html': fields.String,
     'announcement_type': fields.String,
+    'anonymous_recaptcha': fields.Boolean,
     'brand_name': fields.String,
     'check_unique_email': fields.Boolean,
     'feedback_email': fields.String,
