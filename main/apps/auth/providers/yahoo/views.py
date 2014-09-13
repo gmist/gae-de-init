@@ -1,7 +1,8 @@
 # coding: utf-8
-from flask.ext import oauth
+from flask.ext.oauthlib import client as oauth
 import flask
 
+from app import app
 from apps.auth import helpers
 from apps.auth.models import AuthProviders
 from apps.user import models
@@ -11,12 +12,13 @@ from .import CONFIG
 
 PROVIDERS_DB = AuthProviders.get_master_db()
 PROVIDER_NAME = CONFIG['name']
+PROVIDER_KEY = 'OAUTH_%s' % PROVIDER_NAME
+
 
 bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
-yahoo_oauth = oauth.OAuth()
+provider_oauth = oauth.OAuth()
 
-yahoo = yahoo_oauth.remote_app(
-    PROVIDER_NAME,
+app.config[PROVIDER_KEY] = dict(
     base_url='https://social.yahooapis.com/',
     request_token_url='https://api.login.yahoo.com/oauth/v2/get_request_token',
     access_token_url='https://api.login.yahoo.com/oauth/v2/get_token',
@@ -25,9 +27,12 @@ yahoo = yahoo_oauth.remote_app(
     consumer_secret=PROVIDERS_DB.get_field('%s_consumer_secret' % PROVIDER_NAME),
   )
 
+provider = provider_oauth.remote_app(PROVIDER_NAME, app_key=PROVIDER_KEY)
+provider_oauth.init_app(app)
+
 
 @bp.route('/authorized/')
-@yahoo.authorized_handler
+@provider.authorized_handler
 def authorized(resp):
   if resp is None:
     flask.flash(u'You denied the request to sign in.')
@@ -39,11 +44,11 @@ def authorized(resp):
     )
 
   try:
-    yahoo_guid = yahoo.get(
+    yahoo_guid = provider.get(
         '/v1/me/guid', data={'format': 'json', 'realm': 'yahooapis.com'}
       ).data['guid']['value']
 
-    profile = yahoo.get(
+    profile = provider.get(
         '/v1/user/%s/profile' % yahoo_guid,
         data={'format': 'json', 'realm': 'yahooapis.com'}
       ).data['profile']
@@ -57,7 +62,7 @@ def authorized(resp):
   return helpers.signin_user_db(user_db)
 
 
-@yahoo.tokengetter
+@provider.tokengetter
 def get_yahoo_oauth_token():
   return flask.session.get('oauth_token')
 
@@ -67,7 +72,7 @@ def signin():
   helpers.save_request_params()
   flask.session.pop('oauth_token', None)
   try:
-    return yahoo.authorize(
+    return provider.authorize(
         callback=flask.url_for('auth.p.%s.authorized' % PROVIDER_NAME)
       )
   except:

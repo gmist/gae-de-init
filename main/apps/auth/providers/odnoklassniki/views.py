@@ -3,9 +3,10 @@ import hashlib
 import json
 import urllib
 import urllib2
-from flask.ext import oauth
+from flask.ext.oauthlib import client as oauth
 import flask
 
+from app import app
 from apps.auth import helpers
 from apps.auth.models import AuthProviders
 from apps.user import models
@@ -15,12 +16,13 @@ from .import CONFIG
 
 PROVIDERS_DB = AuthProviders.get_master_db()
 PROVIDER_NAME = CONFIG['name']
+PROVIDER_KEY = 'OAUTH_%s' % PROVIDER_NAME
+
 
 bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 provider_oauth = oauth.OAuth()
 
-provider = provider_oauth.remote_app(
-    PROVIDER_NAME,
+app.config[PROVIDER_KEY] = dict(
     base_url='http://api.odnoklassniki.ru/',
     request_token_url=None,
     access_token_url='http://api.odnoklassniki.ru/oauth/token.do',
@@ -30,6 +32,9 @@ provider = provider_oauth.remote_app(
     access_token_params={'grant_type': 'authorization_code'},
     access_token_method='POST',
   )
+
+provider = provider_oauth.remote_app(PROVIDER_NAME, app_key=PROVIDER_KEY)
+provider_oauth.init_app(app)
 
 
 def odnoklassniki_oauth_sig(data, client_secret):
