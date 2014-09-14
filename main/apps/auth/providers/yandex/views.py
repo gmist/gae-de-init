@@ -1,35 +1,14 @@
 # coding: utf-8
-from flask.ext.oauthlib import client as oauth
 import flask
 
-from app import app
 from apps.auth import helpers
-from apps.auth.models import AuthProviders
 from apps.user import models
 from .import CONFIG
 
 
-PROVIDERS_DB = AuthProviders.get_master_db()
 PROVIDER_NAME = CONFIG['name']
-PROVIDER_KEY = 'OAUTH_%s' % PROVIDER_NAME
-
-
 bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
-provider_oauth = oauth.OAuth()
-
-app.config[PROVIDER_KEY] = dict(
-    base_url='https://login.yandex.ru/',
-    request_token_url=None,
-    access_token_url='https://oauth.yandex.com/token',
-    authorize_url='https://oauth.yandex.com/authorize',
-    access_token_method='POST',
-    access_token_params={'grant_type': 'authorization_code'},
-    consumer_key=PROVIDERS_DB.get_field('%s_app_id' % PROVIDER_NAME),
-    consumer_secret=PROVIDERS_DB.get_field('%s_app_secret' % PROVIDER_NAME),
-  )
-
-provider = provider_oauth.remote_app(PROVIDER_NAME, app_key=PROVIDER_KEY)
-provider_oauth.init_app(app)
+provider = helpers.make_provider(CONFIG)
 
 
 @bp.route('/authorized/')

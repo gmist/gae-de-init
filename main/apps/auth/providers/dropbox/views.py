@@ -1,36 +1,15 @@
 # coding: utf-8
 import re
-from flask.ext.oauthlib import client as oauth
 import flask
 
-from app import app
 from apps.auth import helpers
-from apps.auth.models import AuthProviders
 from apps.user import models
 from .import CONFIG
 
 
-PROVIDERS_DB = AuthProviders.get_master_db()
 PROVIDER_NAME = CONFIG['name']
-PROVIDER_KEY = 'OAUTH_%s' % PROVIDER_NAME
-
-
 bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
-provider_oauth = oauth.OAuth()
-
-app.config[PROVIDER_KEY] = dict(
-    base_url='https://api.dropbox.com/1/',
-    request_token_url=None,
-    access_token_url='https://api.dropbox.com/1/oauth2/token',
-    access_token_method='POST',
-    access_token_params={'grant_type': 'authorization_code'},
-    authorize_url='https://www.dropbox.com/1/oauth2/authorize',
-    consumer_key=PROVIDERS_DB.get_field('%s_app_key' % PROVIDER_NAME),
-    consumer_secret=PROVIDERS_DB.get_field('%s_app_secret' % PROVIDER_NAME),
-  )
-
-provider = provider_oauth.remote_app(PROVIDER_NAME, app_key=PROVIDER_KEY)
-provider_oauth.init_app(app)
+provider = helpers.make_provider(CONFIG)
 
 
 @bp.route('/authorized/')

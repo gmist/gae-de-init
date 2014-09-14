@@ -5,36 +5,14 @@ import flask
 import unidecode
 from werkzeug import urls
 
-from app import app
 from apps.auth import helpers
-from apps.auth.models import AuthProviders
 from apps.user import models
-from core import util
 from .import CONFIG
 
 
-PROVIDERS_DB = AuthProviders.get_master_db()
 PROVIDER_NAME = CONFIG['name']
-PROVIDER_KEY = 'OAUTH_%s' % PROVIDER_NAME
-
-
 bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
-provider_oauth = oauth.OAuth()
-
-app.config[PROVIDER_KEY] = dict(
-    base_url='https://oauth.reddit.com/api/v1/',
-    request_token_url=None,
-    access_token_url='https://ssl.reddit.com/api/v1/access_token',
-    access_token_method='POST',
-    access_token_params={'grant_type': 'authorization_code'},
-    authorize_url='https://ssl.reddit.com/api/v1/authorize',
-    consumer_key=PROVIDERS_DB.get_field('%s_client_id' % PROVIDER_NAME),
-    consumer_secret=PROVIDERS_DB.get_field('%s_client_secret' % PROVIDER_NAME),
-    request_token_params={'scope': 'identity', 'state': util.uuid()},
-  )
-
-provider = provider_oauth.remote_app(PROVIDER_NAME, app_key=PROVIDER_KEY)
-provider_oauth.init_app(app)
+provider = helpers.make_provider(CONFIG)
 
 
 def reddit_get_token():

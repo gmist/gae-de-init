@@ -27,14 +27,14 @@ del load_providers_config
 def get_provider_icon(auth_id):
   for name, provider in PROVIDERS_CONFIG.iteritems():
     if auth_id.startswith(name):
-      return provider.get('icon_class') or 'fa-%s' % name
+      return provider.get('icon_class')
   return 'fa-question'
 
 
 def get_provider_title(auth_id):
   for name, provider in PROVIDERS_CONFIG.iteritems():
     if auth_id.startswith(name):
-      return provider.get('title') or provider.get('name').title()
+      return provider.get('title')
   return 'Unknown'
 
 

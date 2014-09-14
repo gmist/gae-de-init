@@ -9,7 +9,7 @@ class AuthProvidersForm(wtf.Form):
   @classmethod
   def append_providers(cls, providers):
     for provider in providers:
-      for field, label in provider.get('key_fields', {}).iteritems():
+      for field, label in provider.get('fields', {}).iteritems():
         setattr(
             cls,
             '%s' % field,

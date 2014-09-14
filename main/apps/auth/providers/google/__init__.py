@@ -1,6 +1,6 @@
 # coding: utf-8
+from apps.auth import helpers
 
-CONFIG = {
-    'name': 'google',
-  }
+NAME = 'google'
 
+CONFIG = helpers.make_provider_config(NAME)

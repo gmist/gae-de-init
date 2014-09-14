@@ -33,7 +33,7 @@ def admin_index():
       auth_providers)(obj=auth_db)
   if form.validate_on_submit():
     for provider in auth_providers:
-      for field in provider.get('key_fields', {}).iterkeys():
+      for field in provider.get('fields', {}).iterkeys():
         try:
           getattr(auth_db, field)
         except AttributeError:
@@ -42,9 +42,9 @@ def admin_index():
     auth_db.put()
     return flask.redirect(flask.url_for('admin.index'))
   for provider in auth_providers:
-    provider_keys = sorted(provider.get('key_fields', {}).keys())
+    provider_keys = sorted(provider.get('fields', {}).keys())
     form_key_fields = [getattr(form, field) for field in provider_keys]
-    provider['key_fields'] = form_key_fields
+    provider['fields'] = form_key_fields
   return flask.render_template(
       'auth/admin/index.html',
       title='Auth Config',
@@ -63,7 +63,7 @@ def signin():
   auth_db = models.AuthProviders.get_master_db()
   auth_providers = []
   for name, provider in auth.PROVIDERS_CONFIG.iteritems():
-    for field in provider.get('key_fields', {}).iterkeys():
+    for field in provider.get('fields', {}).iterkeys():
       if not hasattr(auth_db, field) or not getattr(auth_db, field):
         break
     else:

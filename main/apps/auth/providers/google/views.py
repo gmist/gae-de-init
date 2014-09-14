@@ -1,5 +1,4 @@
 # coding: utf-8
-import re
 from google.appengine.api import users
 import flask
 

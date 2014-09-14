@@ -2,14 +2,19 @@
 import re
 from google.appengine.ext import ndb
 from flask.ext import login
+from flask.ext.oauthlib import client as oauth
 import flask
 import unidecode
 
-from apps.auth.models import FlaskUser
+from app import app
+from apps.auth.models import FlaskUser, AuthProviders
 from apps.user import models
 from core import task
 from core import util
 import config
+
+
+PROVIDERS_DB = AuthProviders.get_master_db()
 
 
 def create_user_db(auth_id, name, username, email='', verified=False, **props):
@@ -78,3 +83,55 @@ def make_provider_bp(provider_name, module_name):
       url_prefix='/auth/p/%s' % provider_name,
       template_folder='templates',
     )
+
+
+def make_provider(provider_config):
+  name = provider_config['name']
+  key = 'oauth_%s' % name
+  oauth_config = provider_config['oauth']
+  provider_oauth = oauth.OAuth()
+  app.config[key] = oauth_config
+  provider = provider_oauth.remote_app(name, app_key=key)
+  provider_oauth.init_app(app)
+  return provider
+
+
+def provider_field_name(provider_name, field_name):
+  return '%s_%s' % (provider_name, field_name)
+
+
+def get_consumer_key_field_name(provider_name):
+  return provider_field_name(provider_name, 'consumer_key')
+
+
+def get_consumer_secret_field_name(provider_name):
+  return provider_field_name(provider_name, 'consumer_secret')
+
+
+def get_consumer_key(provider_name):
+  return PROVIDERS_DB.get_field(get_consumer_key_field_name(provider_name))
+
+
+def get_consumer_secret(provider_name):
+  return PROVIDERS_DB.get_field(get_consumer_secret_field_name(provider_name))
+
+
+def make_provider_config(
+        name, fields=None, oauth_config=None, title=None, icon_class=None):
+  title = title or name.title()
+  icon_class = icon_class or 'fa-%s' % name
+  fields = fields or {}
+  if oauth_config:
+    oauth_config.update({
+        'consumer_key': get_consumer_key(name),
+        'consumer_secret': get_consumer_secret(name),
+      })
+  else:
+    oauth_config = {}
+  return {
+      'name': name,
+      'title': title,
+      'icon_class': icon_class,
+      'fields': fields,
+      'oauth': oauth_config,
+    }

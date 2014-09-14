@@ -28,11 +28,11 @@
       {{form.csrf_token}}
       <div class="panel-group" id="oauth">
         # for provider in auth_providers
-          # if provider.key_fields
+          # if provider.fields
             {{
               forms.oauth_fields(
                   provider.title or provider.name|capitalize,
-                  provider.key_fields,
+                  provider.fields,
                   providers_macro.include_admin_help(provider)
                 )
             }}
