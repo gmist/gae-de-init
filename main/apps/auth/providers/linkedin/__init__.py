@@ -14,7 +14,6 @@ OAUTH = {
     'base_url': 'https://api.linkedin.com/v1/',
     'request_token_url': None,
     'access_token_url': 'https://www.linkedin.com/uas/oauth2/accessToken',
-    'access_token_params': {'grant_type': 'authorization_code'},
     'access_token_method': 'POST',
     'authorize_url': 'https://www.linkedin.com/uas/oauth2/authorization',
     'request_token_params': {

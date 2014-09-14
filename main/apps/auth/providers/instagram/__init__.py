@@ -13,7 +13,6 @@ OAUTH = {
     'base_url': 'https://api.instagram.com/v1',
     'request_token_url': None,
     'access_token_url': 'https://api.instagram.com/oauth/access_token',
-    'access_token_params': {'grant_type': 'authorization_code'},
     'access_token_method': 'POST',
     'authorize_url': 'https://instagram.com/oauth/authorize/',
   }

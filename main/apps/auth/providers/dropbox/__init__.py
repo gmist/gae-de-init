@@ -14,7 +14,6 @@ OAUTH = {
     'request_token_url': None,
     'access_token_url': 'https://api.dropbox.com/1/oauth2/token',
     'access_token_method': 'POST',
-    'access_token_params': {'grant_type': 'authorization_code'},
     'authorize_url': 'https://www.dropbox.com/1/oauth2/authorize',
   }
 

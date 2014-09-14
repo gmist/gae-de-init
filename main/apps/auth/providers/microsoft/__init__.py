@@ -14,7 +14,6 @@ OAUTH = {
     'request_token_url': None,
     'access_token_url': 'https://login.live.com/oauth20_token.srf',
     'access_token_method': 'POST',
-    'access_token_params': {'grant_type': 'authorization_code'},
     'authorize_url': 'https://login.live.com/oauth20_authorize.srf',
     'request_token_params': {'scope': 'wl.emails'},
   }

@@ -14,7 +14,6 @@ OAUTH = {
     'request_token_url': None,
     'access_token_url': 'http://api.odnoklassniki.ru/oauth/token.do',
     'authorize_url': 'http://www.odnoklassniki.ru/oauth/authorize',
-    'access_token_params': {'grant_type': 'authorization_code'},
     'access_token_method': 'POST',
 }
 

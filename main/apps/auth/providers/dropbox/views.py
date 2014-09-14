@@ -21,10 +21,7 @@ def authorized(resp):
         flask.request.args['error_description'],
       )
   flask.session['oauth_token'] = (resp['access_token'], '')
-  me = provider.get(
-      'account/info',
-      headers={'Authorization': 'Bearer %s' % resp['access_token']}
-    )
+  me = provider.get('account/info')
   user_db = retrieve_user_from_dropbox(me.data)
   return helpers.signin_user_db(user_db)
 

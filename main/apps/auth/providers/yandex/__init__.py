@@ -15,7 +15,6 @@ OAUTH = {
     'access_token_url': 'https://oauth.yandex.com/token',
     'authorize_url': 'https://oauth.yandex.com/authorize',
     'access_token_method': 'POST',
-    'access_token_params': {'grant_type': 'authorization_code'},
   }
 
 CONFIG = helpers.make_provider_config(
