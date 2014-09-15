@@ -3,11 +3,14 @@ from base64 import b64encode
 from flask.ext.oauthlib import client as oauth
 import flask
 import unidecode
+import base64
 from werkzeug import urls
+import urllib
 
 from apps.auth import helpers
 from apps.user import models
 from .import CONFIG
+import config
 
 
 PROVIDER_NAME = CONFIG['name']
@@ -19,22 +22,24 @@ def reddit_get_token():
   access_args = {
       'code': flask.request.args.get('code'),
       'client_id': provider.consumer_key,
-      'client_secret': provider.consumer_secret,
       'redirect_uri': flask.session.get(provider.name + '_oauthredir'),
     }
   access_args.update(provider.access_token_params)
   auth = 'Basic ' + b64encode(
       ('%s:%s' % (provider.consumer_key, provider.consumer_secret)).encode(
           'latin1')).strip().decode('latin1')
-  resp, content = provider._client.request(
+  resp, content = provider.request(
       provider.expand_url(provider.access_token_url),
-      provider.access_token_method,
-      urls.url_encode(access_args),
-      headers={'Authorization': auth},
+      method=provider.access_token_method,
+      data=urllib.urlencode(access_args),
+      headers={
+          'Authorization': auth,
+          'User-Agent': 'gae-de-init_v%s' % config.CURRENT_VERSION_ID
+      },
     )
 
   data = oauth.parse_response(resp, content)
-  if not provider.status_okay(resp):
+  if resp.code not in (200, 201):
     raise oauth.OAuthException(
         'Invalid response from ' + provider.name,
         type='invalid_response', data=data,
@@ -44,12 +49,23 @@ def reddit_get_token():
 
 provider.handle_oauth2_response = reddit_get_token
 
+def change_reddit_header(uri, headers, body):
+    headers['User-Agent'] = 'gae-de-init_v%s' % config.CURRENT_VERSION_ID
+    import logging
+    logging.warn(headers)
+    return uri, headers, body
+
+provider.pre_request = change_reddit_header
+
 
 @bp.route('/authorized/')
-@provider.authorized_handler
-def authorized(resp):
-  if flask.request.args.get('error'):
-    return 'Access denied: error=%s' % (flask.request.args['error'])
+def authorized():
+  resp = provider.authorized_response()
+  if resp is None:
+    return 'Access denied: error=%s error_description=%s' % (
+        flask.request.args.get('error', 'Unknown'),
+        flask.request.args.get('error_description', 'Unknown'),
+      )
 
   flask.session['oauth_token'] = (resp['access_token'], '')
   me = provider.request(

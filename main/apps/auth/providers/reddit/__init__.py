@@ -15,6 +15,7 @@ OAUTH = {
     'request_token_url': None,
     'access_token_url': 'https://ssl.reddit.com/api/v1/access_token',
     'access_token_method': 'POST',
+    'access_token_params': {'grant_type': 'authorization_code'},
     'authorize_url': 'https://ssl.reddit.com/api/v1/authorize',
     'request_token_params': {'scope': 'identity', 'state': util.uuid()},
   }
