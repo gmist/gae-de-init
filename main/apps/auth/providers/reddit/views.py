@@ -3,8 +3,6 @@ from base64 import b64encode
 from flask.ext.oauthlib import client as oauth
 import flask
 import unidecode
-import base64
-from werkzeug import urls
 import urllib
 
 from apps.auth import helpers
@@ -28,7 +26,7 @@ def reddit_get_token():
   auth = 'Basic ' + b64encode(
       ('%s:%s' % (provider.consumer_key, provider.consumer_secret)).encode(
           'latin1')).strip().decode('latin1')
-  resp, content = provider.request(
+  resp, content = provider.http_request(
       provider.expand_url(provider.access_token_url),
       method=provider.access_token_method,
       data=urllib.urlencode(access_args),
