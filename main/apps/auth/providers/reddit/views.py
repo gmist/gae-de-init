@@ -47,6 +47,7 @@ def reddit_get_token():
 
 provider.handle_oauth2_response = reddit_get_token
 
+
 def change_reddit_header(uri, headers, body):
     headers['User-Agent'] = 'gae-de-init_v%s' % config.CURRENT_VERSION_ID
     import logging
