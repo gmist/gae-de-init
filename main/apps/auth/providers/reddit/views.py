@@ -44,14 +44,11 @@ def reddit_get_token():
       )
   return data
 
-
 provider.handle_oauth2_response = reddit_get_token
 
 
 def change_reddit_header(uri, headers, body):
     headers['User-Agent'] = 'gae-de-init_v%s' % config.CURRENT_VERSION_ID
-    import logging
-    logging.warn(headers)
     return uri, headers, body
 
 provider.pre_request = change_reddit_header
