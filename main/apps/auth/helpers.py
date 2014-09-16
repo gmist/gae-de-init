@@ -140,6 +140,7 @@ def make_provider_config(
 def signin(provider, callback=None):
   flask.session.pop('oauth_token', None)
   save_request_params()
-  return provider.authorize(callback=flask.url_for(
+  callback = callback if callback else flask.url_for(
       'auth.p.%s.authorized' % provider.name, _external=True
-    ))
+    )
+  return provider.authorize(callback=callback)
