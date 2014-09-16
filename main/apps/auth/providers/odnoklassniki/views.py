@@ -81,9 +81,7 @@ def signin():
   helpers.save_request_params()
   return provider.authorize(
       callback=flask.url_for(
-          'auth.p.%s.authorized' % PROVIDER_NAME,
-          next=util.get_next_url(),
-          _external=True,
+          'auth.p.%s.authorized' % PROVIDER_NAME, _external=True
         )
     )
 
