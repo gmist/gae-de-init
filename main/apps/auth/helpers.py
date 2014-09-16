@@ -18,7 +18,7 @@ PROVIDERS_DB = AuthProviders.get_master_db()
 
 
 def create_user_db(auth_id, name, username, email='', verified=False, **props):
-  email = email.lower()
+  email = email.lower() if email else ''
   if verified and email:
     user_dbs, _, _ = models.User.get_dbs(email=email, verified=True, limit=2)
     if len(user_dbs) == 1:
