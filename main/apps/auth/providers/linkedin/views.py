@@ -49,11 +49,7 @@ def get_linkedin_oauth_token():
 
 @bp.route('/signin/%s/' % PROVIDER_NAME)
 def signin():
-  flask.session['access_token'] = None
-  helpers.save_request_params()
-  return provider.authorize(callback=flask.url_for(
-      'auth.p.%s.authorized' % PROVIDER_NAME, _external=True
-    ))
+  return helpers.signin(provider)
 
 
 def retrieve_user_from_linkedin(response):

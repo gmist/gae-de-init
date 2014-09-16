@@ -78,12 +78,7 @@ def get_odnoklassniki_oauth_token():
 
 @bp.route('/signin/')
 def signin():
-  helpers.save_request_params()
-  return provider.authorize(
-      callback=flask.url_for(
-          'auth.p.%s.authorized' % PROVIDER_NAME, _external=True
-        )
-    )
+  return helpers.signin(provider)
 
 
 def retrieve_user_from_odnoklassniki(response):

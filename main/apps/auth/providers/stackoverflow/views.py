@@ -49,11 +49,7 @@ def get_stackoverflow_oauth_token():
 
 @bp.route('/signin/')
 def signin():
-  flask.session['oauth_token'] = None
-  helpers.save_request_params()
-  return provider.authorize(callback=flask.url_for(
-      'auth.p.%s.authorized' % PROVIDER_NAME, _external=True
-    ))
+  return helpers.signin(provider)
 
 
 def retrieve_user_from_stackoverflow(response):

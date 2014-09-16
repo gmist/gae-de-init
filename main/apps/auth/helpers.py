@@ -135,3 +135,11 @@ def make_provider_config(
       'fields': fields,
       'oauth': oauth_config,
     }
+
+
+def signin(provider, callback=None):
+  flask.session.pop('oauth_token', None)
+  save_request_params()
+  return provider.authorize(callback=flask.url_for(
+      'auth.p.%s.authorized' % provider.name, _external=True
+    ))

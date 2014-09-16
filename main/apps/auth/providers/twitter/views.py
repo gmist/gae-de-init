@@ -34,12 +34,8 @@ def get_twitter_token():
 
 @bp.route('/signin/')
 def signin():
-  flask.session.pop('oauth_token', None)
-  helpers.save_request_params()
   try:
-    return provider.authorize(
-        callback=flask.url_for('auth.p.%s.authorized' % PROVIDER_NAME)
-      )
+    return helpers.signin(provider)
   except:
     flask.flash(
         'Something went wrong with Twitter sign in. Please try again.',

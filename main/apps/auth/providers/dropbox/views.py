@@ -33,11 +33,11 @@ def get_dropbox_oauth_token():
 
 @bp.route('/signin/')
 def signin():
-  flask.session['oauth_token'] = None
-  helpers.save_request_params()
-  return provider.authorize(callback=re.sub(r'^http:', 'https:', flask.url_for(
-      'auth.p.%s.authorized' % PROVIDER_NAME, _external=True
-    )))
+  return helpers.signin(
+      provider,
+      re.sub(r'^http:', 'https:', flask.url_for(
+          'auth.p.%s.authorized' % PROVIDER_NAME, _external=True))
+    )
 
 
 def retrieve_user_from_dropbox(response):

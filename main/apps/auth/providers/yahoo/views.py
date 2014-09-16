@@ -50,12 +50,8 @@ def get_yahoo_oauth_token():
 
 @bp.route('/signin/')
 def signin():
-  helpers.save_request_params()
-  flask.session.pop('oauth_token', None)
   try:
-    return provider.authorize(
-        callback=flask.url_for('auth.p.%s.authorized' % PROVIDER_NAME)
-      )
+    return helpers.signin(provider)
   except:
     flask.flash(
         'Something went wrong with Yahoo! sign in. Please try again.',
