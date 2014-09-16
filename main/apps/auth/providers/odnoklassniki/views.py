@@ -31,7 +31,7 @@ def odnoklassniki_oauth_sig(data, client_secret):
 
 
 @bp.route('/authorized/')
-def authorized(resp):
+def authorized():
   resp = provider.authorized_response()
   if resp is None:
     return 'Access denied: reason=%s error=%s' % (
