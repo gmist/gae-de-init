@@ -33,7 +33,7 @@ def reddit_get_token():
       headers={
           'Authorization': auth,
           'User-Agent': 'gae-de-init_v%s' % config.CURRENT_VERSION_ID
-      },
+        },
     )
 
   data = oauth.parse_response(resp, content)
