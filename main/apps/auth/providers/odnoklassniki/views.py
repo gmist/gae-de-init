@@ -31,8 +31,8 @@ def odnoklassniki_oauth_sig(data, client_secret):
 
 
 @bp.route('/authorized/')
-@provider.authorized_handler
 def authorized(resp):
+  resp = provider.authorized_response()
   if resp is None:
     return 'Access denied: reason=%s error=%s' % (
         flask.request.args['error_reason'],

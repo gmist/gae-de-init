@@ -12,8 +12,8 @@ provider = helpers.make_provider(CONFIG)
 
 
 @bp.route('/authorized/')
-@provider.authorized_handler
-def authorized(resp):
+def authorized():
+  resp = provider.authorized_response()
   if resp is None:
     return 'Access denied'
   flask.session['oauth_token'] = (

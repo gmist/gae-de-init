@@ -13,8 +13,8 @@ provider = helpers.make_provider(CONFIG)
 
 
 @bp.route('/authorized/')
-@provider.authorized_handler
-def authorized(resp):
+def authorized():
+  resp = provider.authorized_response()
   if resp is None:
     flask.flash(u'You denied the request to sign in.')
     return flask.redirect(util.get_next_url())
