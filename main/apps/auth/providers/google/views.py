@@ -9,7 +9,6 @@ from .import CONFIG
 
 
 PROVIDER_NAME = CONFIG['name']
-
 bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 
 

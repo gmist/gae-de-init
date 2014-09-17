@@ -7,9 +7,8 @@ from core import util
 from .import CONFIG
 
 
-PROVIDER_NAME = CONFIG['name']
-bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 provider = helpers.make_provider(CONFIG)
+bp = helpers.make_provider_bp(provider.name, __name__)
 
 
 @bp.route('/authorized/')
@@ -36,7 +35,7 @@ def signin():
 
 
 def retrieve_user_from_facebook(response):
-  auth_id = '%s_%s' % (PROVIDER_NAME, response['id'])
+  auth_id = '%s_%s' % (provider.name, response['id'])
   user_db = models.User.get_by('auth_ids', auth_id)
   if user_db:
     return user_db

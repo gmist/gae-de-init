@@ -13,9 +13,8 @@ from .import CONFIG
 
 
 PROVIDERS_DB = AuthProviders.get_master_db()
-PROVIDER_NAME = CONFIG['name']
-bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 provider = helpers.make_provider(CONFIG)
+bp = helpers.make_provider_bp(provider.name, __name__)
 
 
 def odnoklassniki_oauth_sig(data, client_secret):
@@ -49,7 +48,7 @@ def authorized():
     data = {
         'method': 'users.getCurrentUser',
         'application_key':
-        PROVIDERS_DB.get_field('%s_consumer_public' % PROVIDER_NAME),
+        PROVIDERS_DB.get_field('%s_consumer_public' % provider.name),
         'access_token': access_token,
       }
     data['sig'] = odnoklassniki_oauth_sig(
@@ -82,7 +81,7 @@ def signin():
 
 
 def retrieve_user_from_odnoklassniki(response):
-  auth_id = '%s_%s' % (PROVIDER_NAME, response['uid'])
+  auth_id = '%s_%s' % (provider.name, response['uid'])
   user_db = models.User.get_by_id('auth_ids', auth_id)
   if user_db:
     return user_db

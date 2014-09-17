@@ -8,9 +8,8 @@ from .import CONFIG
 
 
 PROVIDERS_DB = AuthProviders.get_master_db()
-PROVIDER_NAME = CONFIG['name']
-bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 provider = helpers.make_provider(CONFIG)
+bp = helpers.make_provider_bp(provider.name, __name__)
 
 
 @bp.route('/authorized/')
@@ -27,7 +26,7 @@ def authorized():
       data={
           'site': 'stackoverflow',
           'access_token': resp['access_token'],
-          'key': PROVIDERS_DB.get_field('%s_key' % PROVIDER_NAME),
+          'key': PROVIDERS_DB.get_field('%s_key' % provider.name),
         }
     )
   if me.data.get('error_id'):
@@ -53,7 +52,7 @@ def signin():
 
 
 def retrieve_user_from_stackoverflow(response):
-  auth_id = '%s_%s' % (PROVIDER_NAME, response['user_id'])
+  auth_id = '%s_%s' % (provider.name, response['user_id'])
   user_db = models.User.get_by('auth_ids', auth_id)
   if user_db:
     return user_db

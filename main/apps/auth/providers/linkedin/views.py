@@ -6,9 +6,8 @@ from apps.user import models
 from .import CONFIG
 
 
-PROVIDER_NAME = CONFIG['name']
-bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 provider = helpers.make_provider(CONFIG)
+bp = helpers.make_provider_bp(provider.name, __name__)
 
 
 def change_linkedin_query(uri, headers, body):
@@ -52,13 +51,13 @@ def get_linkedin_oauth_token():
   return flask.session.get('access_token')
 
 
-@bp.route('/signin/%s/' % PROVIDER_NAME)
+@bp.route('/signin/%s/' % provider.name)
 def signin():
   return helpers.signin(provider)
 
 
 def retrieve_user_from_linkedin(response):
-  auth_id = '%s_%s' % (PROVIDER_NAME, response['id'])
+  auth_id = '%s_%s' % (provider.name, response['id'])
   user_db = models.User.get_by('auth_ids', auth_id)
   if user_db:
     return user_db
