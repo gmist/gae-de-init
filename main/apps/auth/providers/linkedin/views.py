@@ -1,7 +1,5 @@
 # coding: utf-8
-from google.appengine.api import urlfetch
 import flask
-import unidecode
 
 from apps.auth import helpers
 from apps.user import models
@@ -64,11 +62,15 @@ def retrieve_user_from_linkedin(response):
   user_db = models.User.get_by('auth_ids', auth_id)
   if user_db:
     return user_db
-  full_name = ' '.join([response['firstName'], response['lastName']]).strip()
+  first_name = response.get('firstName', '')
+  last_name = response.get('lastName', '')
+  full_name = ' '.join([first_name, last_name]).strip()
+  email = response.get('emailAddress', '')
   return helpers.create_user_db(
       auth_id,
-      full_name,
-      response['emailAddress'] or unidecode.unidecode(full_name),
-      response['emailAddress'],
+      name=full_name,
+      username=email or full_name,
+      email=email,
+      verified=bool(email)
     )
 
