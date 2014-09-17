@@ -13,6 +13,20 @@ bp = helpers.make_provider_bp(PROVIDER_NAME, __name__)
 provider = helpers.make_provider(CONFIG)
 
 
+def change_linkedin_query(uri, headers, body):
+    auth = headers.pop('Authorization')
+    headers['x-li-format'] = 'json'
+    if auth:
+        auth = auth.replace('Bearer', '').strip()
+        if '?' in uri:
+            uri += '&oauth2_access_token=' + auth
+        else:
+            uri += '?oauth2_access_token=' + auth
+    return uri, headers, body
+
+provider.pre_request = change_linkedin_query
+
+
 @bp.route('/authorized/')
 def authorized():
   resp = provider.authorized_response()
@@ -23,22 +37,15 @@ def authorized():
       )
   flask.session['access_token'] = (resp['access_token'], '')
   fields = 'id,first-name,last-name,email-address'
-  profile_url = '%speople/~:(%s)?oauth2_access_token=%s' % (
-      provider.base_url, fields, resp['access_token'],
+  profile_url = '%speople/~:(%s)' % (
+      provider.base_url, fields,
     )
-  result = urlfetch.fetch(
-      profile_url,
-      headers={'x-li-format': 'json', 'Content-Type': 'application/json'}
-    )
-  try:
-    content = flask.json.loads(result.content)
-  except ValueError:
-    return "Unknown error: invalid response from LinkedIn"
-  if result.status_code != 200:
+  result = provider.get(profile_url)
+  if result.status != 200:
     return 'Unknown error: status=%s message=%s' % (
-        content['status'], content['message'],
+        result.data['status'], result.data['message'],
       )
-  user_db = retrieve_user_from_linkedin(content)
+  user_db = retrieve_user_from_linkedin(result.data)
   return helpers.signin_user_db(user_db)
 
 
