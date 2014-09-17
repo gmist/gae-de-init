@@ -16,6 +16,7 @@ def authorized():
   resp = provider.authorized_response()
   if resp is None:
     return 'Access denied'
+
   flask.session['oauth_token'] = (
       resp['oauth_token'], resp['oauth_token_secret'],
     )
@@ -43,4 +44,12 @@ def retrieve_user_from_bitbucket(response):
     name = ' '.join((response['first_name'], response['last_name'])).strip()
   else:
     name = response['username']
-  return helpers.create_user_db(auth_id, name, response['username'])
+  emails = provider.get('users/%s/emails' % response['username'])
+  email = ''.join([e['email'] for e in emails.data if e['primary']][0:1])
+  return helpers.create_user_db(
+      auth_id,
+      name,
+      response['username'],
+      email=email,
+      verified=bool(email),
+    )
