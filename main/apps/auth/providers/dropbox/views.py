@@ -1,5 +1,4 @@
 # coding: utf-8
-import re
 import flask
 
 from apps.auth import helpers
@@ -43,7 +42,7 @@ def retrieve_user_from_dropbox(response):
     return user_db
 
   return helpers.create_user_db(
-      auth_id,
-      response['display_name'],
-      response['display_name'],
+      auth_id=auth_id,
+      name=response['display_name'],
+      username=response['display_name'],
     )
