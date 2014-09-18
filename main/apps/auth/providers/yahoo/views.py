@@ -25,7 +25,8 @@ def authorized():
 
   try:
     yahoo_guid = provider.get(
-        '/v1/me/guid', data={'format': 'json', 'realm': 'yahooapis.com'}
+        '/v1/me/guid',
+        data={'format': 'json', 'realm': 'yahooapis.com'}
       ).data['guid']['value']
 
     profile = provider.get(
@@ -34,7 +35,7 @@ def authorized():
       ).data['profile']
   except:
     flask.flash(
-        'Something went wrong with Yahoo! sign in. Please try again.',
+        u'Something went wrong with Yahoo! sign in. Please try again.',
         category='danger',
       )
     return flask.redirect(util.get_next_url())
@@ -53,7 +54,7 @@ def signin():
     return helpers.signin(provider)
   except:
     flask.flash(
-        'Something went wrong with Yahoo! sign in. Please try again.',
+        u'Something went wrong with Yahoo! sign in. Please try again.',
         category='danger',
       )
     return flask.redirect(flask.url_for('auth.signin', next=util.get_next_url()))
