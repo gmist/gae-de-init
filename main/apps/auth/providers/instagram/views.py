@@ -42,7 +42,7 @@ def retrieve_user_from_instagram(response):
     return user_db
 
   return helpers.create_user_db(
-      auth_id,
-      response['full_name'] or response['username'],
-      response['username'],
+      auth_id=auth_id,
+      name=response.get('full_name', '').strip() or response.get('username'),
+      username=response['username'],
     )
