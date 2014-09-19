@@ -65,18 +65,14 @@ def retrieve_user_from_yahoo(response):
   user_db = models.User.get_by('auth_ids', auth_id)
   if user_db:
     return user_db
-  if response.get('givenName') or response.get('familyName'):
-    full_name = ' '.join((response['givenName'], response['familyName'])).strip()
-  else:
-    full_name = response['nickname']
-  emails = [
-      email for email in response.get('emails', []) if email.get('handle')]
+  emails = [e for e in response.get('emails', []) if e.get('handle')]
   emails.sort(key=lambda e: e.get('primary', False))
   email = emails[0]['handle'] if emails else ''
+  names = [response.get('givenName', ''), response.get('familyName', '')]
   return helpers.create_user_db(
-      auth_id,
-      full_name,
-      response['nickname'],
-      email,
-      verified=bool(email)
+      auth_id=auth_id,
+      name=' '.join(names).strip() or response['nickname'],
+      username=response['nickname'],
+      email=email,
+      verified=bool(email),
     )

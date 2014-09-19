@@ -2,7 +2,6 @@
 from base64 import b64encode
 from flask.ext.oauthlib import client as oauth
 import flask
-import unidecode
 import urllib
 
 from apps.auth import helpers
@@ -55,17 +54,17 @@ provider.pre_request = change_reddit_header
 
 @bp.route('/authorized/')
 def authorized():
-  resp = provider.authorized_response()
-  if resp is None:
+  response = provider.authorized_response()
+  if response is None:
     return 'Access denied: error=%s error_description=%s' % (
         flask.request.args.get('error', 'Unknown'),
         flask.request.args.get('error_description', 'Unknown'),
       )
 
-  flask.session['oauth_token'] = (resp['access_token'], '')
+  flask.session['oauth_token'] = (response['access_token'], '')
   me = provider.request(
       'me',
-      headers={'Authorization': 'Bearer %s' % resp['access_token']},
+      headers={'Authorization': 'Bearer %s' % response['access_token']},
     )
   user_db = retrieve_user_from_reddit(me.data)
   return helpers.signin_user_db(user_db)
@@ -87,7 +86,7 @@ def retrieve_user_from_reddit(response):
   if user_db:
     return user_db
   return helpers.create_user_db(
-      auth_id,
-      response['name'],
-      unidecode.unidecode(response['name']),
+      auth_id=auth_id,
+      name=response['name'],
+      username=response['name']
     )

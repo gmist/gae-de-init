@@ -12,15 +12,15 @@ bp = helpers.make_provider_bp(provider.name, __name__)
 
 @bp.route('/authorized/')
 def authorized():
-  resp = provider.authorized_response()
-  if resp is None:
+  response = provider.authorized_response()
+  if response is None:
     return 'Access denied: error=%s error_description=%s' % (
         flask.request.args['error'],
         flask.request.args['error_description'],
       )
-  access_token = resp['access_token']
+  access_token = response['access_token']
   flask.session['oauth_token'] = (access_token, '')
-  me = resp['user']
+  me = response['user']
   user_db = retrieve_user_from_instagram(me)
   return helpers.signin_user_db(user_db)
 

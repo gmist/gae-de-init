@@ -13,16 +13,16 @@ bp = helpers.make_provider_bp(provider.name, __name__)
 
 @bp.route('/authorized/')
 def authorized():
-  resp = provider.authorized_response()
-  if resp is None:
+  response = provider.authorized_response()
+  if response is None:
     flask.flash(u'You denied the request to sign in.')
     return flask.redirect(util.get_next_url())
 
   flask.session['oauth_token'] = (
-      resp['oauth_token'],
-      resp['oauth_token_secret'],
+      response['oauth_token'],
+      response['oauth_token_secret'],
     )
-  user_db = retrieve_user_from_twitter(resp)
+  user_db = retrieve_user_from_twitter(response)
   return helpers.signin_user_db(user_db)
 
 
@@ -37,7 +37,7 @@ def signin():
     return helpers.signin(provider)
   except:
     flask.flash(
-        'Something went wrong with Twitter sign in. Please try again.',
+        u'Something went wrong with Twitter sign in. Please try again.',
         category='danger',
       )
     return flask.redirect(
@@ -52,7 +52,7 @@ def retrieve_user_from_twitter(response):
     return user_db
 
   return helpers.create_user_db(
-      auth_id,
-      response['screen_name'],
-      response['screen_name'],
+      auth_id=auth_id,
+      name=response['screen_name'],
+      username=response['screen_name'],
     )

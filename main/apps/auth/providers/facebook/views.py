@@ -13,12 +13,12 @@ bp = helpers.make_provider_bp(provider.name, __name__)
 
 @bp.route('/authorized/')
 def authorized():
-  resp = provider.authorized_response()
-  if resp is None:
+  response = provider.authorized_response()
+  if response is None:
     flask.flash(u'You denied the request to sign in.')
     return flask.redirect(util.get_next_url())
 
-  flask.session['oauth_token'] = (resp['access_token'], '')
+  flask.session['oauth_token'] = (response['access_token'], '')
   me = provider.get('/me')
   user_db = retrieve_user_from_facebook(me.data)
   return helpers.signin_user_db(user_db)
@@ -40,9 +40,9 @@ def retrieve_user_from_facebook(response):
   if user_db:
     return user_db
   return helpers.create_user_db(
-      auth_id,
-      response['name'],
-      response.get('username', response['name']),
-      response.get('email', ''),
+      auth_id=auth_id,
+      name=response['name'],
+      username=response.get('username', response['name']),
+      email=response.get('email', ''),
       verified=bool(response.get('email', ''))
     )

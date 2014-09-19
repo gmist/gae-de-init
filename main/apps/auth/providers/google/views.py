@@ -42,10 +42,10 @@ def retrieve_user_from_google(google_user):
     return user_db
 
   return helpers.create_user_db(
-      auth_id,
-      util.create_name_from_email(google_user.email()),
-      google_user.email(),
-      google_user.email(),
+      auth_id=auth_id,
+      name=util.create_name_from_email(google_user.email()),
+      username=google_user.email(),
+      email=google_user.email(),
       verified=True,
       admin=users.is_current_user_admin(),
     )

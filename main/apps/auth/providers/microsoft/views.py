@@ -12,16 +12,16 @@ bp = helpers.make_provider_bp(provider.name, __name__)
 
 @bp.route('/authorized/')
 def authorized():
-  resp = provider.authorized_response()
-  if resp is None:
+  response = provider.authorized_response()
+  if response is None:
     return 'Access denied: error=%s error_description=%s' % (
         flask.request.args['error'],
         flask.request.args['error_description'],
       )
-  flask.session['oauth_token'] = (resp['access_token'], '')
+  flask.session['oauth_token'] = (response['access_token'], '')
   me = provider.get(
       'me',
-      data={'access_token': resp['access_token']},
+      data={'access_token': response['access_token']},
       headers={'accept-encoding': 'identity'},
     ).data
   if me.get('error'):
@@ -50,9 +50,9 @@ def retrieve_user_from_microsoft(response):
     return user_db
   email = response['emails']['preferred'] or response['emails']['account']
   return helpers.create_user_db(
-      auth_id,
-      response['name'] or '',
-      email,
-      email,
+      auth_id=auth_id,
+      name=response['name'] or '',
+      username=email,
+      email=email,
       verified=bool(email)
     )

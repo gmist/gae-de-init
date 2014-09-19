@@ -26,13 +26,13 @@ provider.pre_request = change_linkedin_query
 
 @bp.route('/authorized/')
 def authorized():
-  resp = provider.authorized_response()
-  if resp is None:
+  response = provider.authorized_response()
+  if response is None:
     return 'Access denied: error=%s error_description=%s' % (
         flask.request.args['error'],
         flask.request.args['error_description'],
       )
-  flask.session['access_token'] = (resp['access_token'], '')
+  flask.session['access_token'] = (response['access_token'], '')
   fields = 'id,first-name,last-name,email-address'
   profile_url = '%speople/~:(%s)' % (
       provider.base_url, fields,
@@ -66,7 +66,7 @@ def retrieve_user_from_linkedin(response):
   full_name = ' '.join([first_name, last_name]).strip()
   email = response.get('emailAddress', '')
   return helpers.create_user_db(
-      auth_id,
+      auth_id=auth_id,
       name=full_name,
       username=email or full_name,
       email=email,
