@@ -61,7 +61,7 @@ def authorized():
     user_db = retrieve_user_from_odnoklassniki(odnoklassniki_resp)
   except:
     flask.flash(
-        'Something went wrong with Odnoklassniki sign in. Please try again.',
+        u'Something went wrong with Odnoklassniki sign in. Please try again.',
         category='danger'
       )
     return flask.redirect(flask.url_for(
