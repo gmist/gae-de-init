@@ -41,7 +41,7 @@
         </button>
         # if form.email.data
           <div class="text-center">or</div>
-          <a href="mailto:{{ form.email.data }}?subject=Re: {{ form.subject.data }}&body=>{{ form.message.data }}"
+          <a href="mailto:{{ form.email.data }}?subject=Re: {{ feedback_db.subject }}&body=>{{ form.message.data }}"
              class="btn btn-lg btn-block btn-info">
             Reply by your default email client
           </a>
