@@ -28,6 +28,9 @@ class ConfigUpdateForm(wtf.Form):
   check_unique_email = wtforms.BooleanField(
       'Check for the uniqueness of the verified emails'
     )
+  email_authentication = wtforms.BooleanField(
+      'Email authentication for sign in/sign up'
+    )
   feedback_email = wtforms.StringField(
       'Feedback Email',
       [wtforms.validators.optional(), wtforms.validators.email()],
@@ -46,6 +49,9 @@ class ConfigUpdateForm(wtf.Form):
     )
   recaptcha_public_key = wtforms.StringField(
       'Public Key', filters=[util.strip_filter]
+    )
+  salt = wtforms.StringField(
+      'Salt', [wtforms.validators.optional()], filters=[util.strip_filter]
     )
   send_error_reports = wtforms.BooleanField('Send daily error reports')
   verify_email = wtforms.BooleanField('Verify user emails')

@@ -33,8 +33,11 @@ else:
   SECRET_KEY = CONFIG_DB.flask_secret_key.encode('ascii')
   RECAPTCHA_PUBLIC_KEY = CONFIG_DB.recaptcha_public_key
   RECAPTCHA_PRIVATE_KEY = CONFIG_DB.recaptcha_private_key
+  RECAPTCHA_LIMIT = 8
+
 
 DEFAULT_DB_LIMIT = 64
+SIGNIN_RETRY_LIMIT = 4
 
 
 ###############################################################################
@@ -62,7 +65,7 @@ SCRIPTS = [
       ]),
     ('apps', [
         'src/script/apps/admin/admin.coffee',
-        'src/script/apps/auth/signin.coffee',
+        'src/script/apps/auth/auth.coffee',
         'src/script/apps/feedback/admin.coffee',
         'src/script/apps/user/admin.coffee',
         'src/script/apps/user/profile.coffee',

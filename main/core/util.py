@@ -46,6 +46,8 @@ def get_next_url(next_url='', skip_referrer=False):
   if next_url:
     do_not_redirect_urls = [
         flask.url_for('auth.signin'),
+        flask.url_for('auth.signup'),
+        flask.url_for('auth.user_reset'),
       ]
     if any(url in next_url for url in do_not_redirect_urls):
       return flask.url_for('pages.welcome')

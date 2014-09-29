@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 import flask
 
 from apps import auth
+from apps.auth import helpers
 from core import task
 from core import util
 import forms
@@ -24,7 +25,9 @@ bp = flask.Blueprint(
 @bp.route('/', endpoint='list')
 @auth.admin_required
 def user_list():
-  user_dbs, user_cursor, prev_cursor = models.User.get_dbs()
+  user_dbs, user_cursor, prev_cursor = models.User.get_dbs(
+      email=util.param('email')
+    )
   permissions = list(forms.UserUpdateForm._permission_choices)
   permissions += util.param('permissions', list) or []
   return flask.render_template(
@@ -173,8 +176,23 @@ def profile():
     email = form.email.data
     if email and not user_db.is_email_available(email, user_db.key):
       form.email.errors.append('This email is already taken.')
+    errors = False
+    old_password = form.old_password.data
+    new_password = form.new_password.data
+    if new_password or old_password:
+      if user_db.password_hash:
+        if helpers.password_hash(user_db, old_password) != user_db.password_hash:
+          form.old_password.errors.append('Invalid current password')
+          errors = True
+      if not errors and old_password and not new_password:
+        form.new_password.errors.append('This field is required.')
+        errors = True
 
-    if not form.errors:
+      if not (form.errors or errors):
+        user_db.password_hash = helpers.password_hash(user_db, new_password)
+        flask.flash('Your password has been changed.', category='success')
+
+    if not (form.errors or errors):
       send_verification = not user_db.token or user_db.email != email
       form.populate_obj(user_db)
       if send_verification:

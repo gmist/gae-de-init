@@ -4,6 +4,7 @@ from flask.ext import login
 
 from core import base
 
+
 class AnonymousUser(login.AnonymousUserMixin):
   id = 0
   admin = False

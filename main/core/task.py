@@ -34,6 +34,7 @@ def new_user_notification(user_db):
     )
   send_mail_notification('New user: %s' % user_db.name, body)
 
+
 ###############################################################################
 # User Related
 ###############################################################################
@@ -68,3 +69,11 @@ Best regards,
       category='success',
     )
   send_mail_notification('Verify your email!', body, to)
+
+
+def email_conflict_notification(email):
+  body = 'There is a conflict with %s\n\n%s' % (
+      email,
+      flask.url_for('user_list', email=email, _external=True),
+    )
+  send_mail_notification('Conflict with: %s' % email, body)

@@ -16,6 +16,7 @@ class User(base.Base):
   auth_ids = ndb.StringProperty(repeated=True)
   active = ndb.BooleanProperty(default=True)
   admin = ndb.BooleanProperty(default=False)
+  password_hash = ndb.StringProperty(default='')
   permissions = ndb.StringProperty(repeated=True)
   token = ndb.StringProperty(default='')
   verified = ndb.BooleanProperty(default=False)

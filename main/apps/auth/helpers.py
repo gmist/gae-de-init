@@ -1,5 +1,7 @@
 # coding: utf-8
 import re
+import hashlib
+
 from google.appengine.ext import ndb
 from flask.ext import login
 from flask.ext.oauthlib import client as oauth
@@ -8,7 +10,7 @@ import unidecode
 
 from app import app
 from apps.auth.models import FlaskUser, AuthProviders
-from apps.user import models
+from apps.user import models as u_models
 from core import task
 from core import util
 import config
@@ -20,7 +22,7 @@ PROVIDERS_DB = AuthProviders.get_master_db()
 def create_user_db(auth_id, name, username, email='', verified=False, **props):
   email = email.lower() if email else ''
   if verified and email:
-    user_dbs, _, _ = models.User.get_dbs(email=email, verified=True, limit=2)
+    user_dbs, _, _ = u_models.User.get_dbs(email=email, verified=True, limit=2)
     if len(user_dbs) == 1:
       user_db = user_dbs[0]
       user_db.auth_ids.append(auth_id)
@@ -34,11 +36,11 @@ def create_user_db(auth_id, name, username, email='', verified=False, **props):
   username = re.sub(r'[\W_]+', '.', username)
   new_username = username
   n = 1
-  while not models.User.is_username_available(new_username):
+  while not u_models.User.is_username_available(new_username):
     new_username = '%s%d' % (username, n)
     n += 1
 
-  user_db = models.User(
+  user_db = u_models.User(
       name=name,
       email=email,
       username=new_username,
@@ -143,3 +145,32 @@ def signin(provider, scheme='http'):
   return provider.authorize(flask.url_for(
       'auth.p.%s.authorized' % provider.name, _external=True, _scheme=scheme
     ))
+
+
+def retrieve_user_from_email(email, password):
+  user_dbs, _, _ = u_models.User.get_dbs(
+      email=email, active=True, limit=2
+    )
+  if not user_dbs:
+    return None
+  if len(user_dbs) > 1:
+    flask.flash('''We are sorry but it looks like there is a conflict with your
+        account. Our support team is already informed and we will get back to
+        you as soon as possible.''', category='danger')
+    task.email_conflict_notification(email)
+    return False
+
+  user_db = user_dbs[0]
+  if user_db.password_hash == password_hash(user_db, password):
+    return user_db
+  return None
+
+
+def password_hash(user_db, password):
+  m = hashlib.sha256()
+  m.update(user_db.key.urlsafe())
+  m.update(user_db.created.isoformat())
+  m.update(m.hexdigest())
+  m.update(password.encode('utf-8'))
+  m.update(config.CONFIG_DB.salt)
+  return m.hexdigest()
