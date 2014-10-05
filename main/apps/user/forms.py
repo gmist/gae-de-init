@@ -76,10 +76,13 @@ class ProfileUpdateForm(wtf.Form):
       [wtforms.validators.optional(), wtforms.validators.email()],
       filters=[util.email_filter],
     )
+
+
+class ProfilePasswordForm(wtf.Form):
   old_password = wtforms.StringField(
       'Old Password', [wtforms.validators.optional()],
     )
   new_password = wtforms.StringField(
       'New Password',
-      [wtforms.validators.optional(), wtforms.validators.length(min=6)]
+      [wtforms.validators.required(), wtforms.validators.length(min=6)]
     )

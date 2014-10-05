@@ -232,7 +232,7 @@ def user_activate(token):
   user_db = u_models.User.get_by('token', token)
   if not user_db:
     flask.flash('That link is either invalid or expired.', category='danger')
-    return flask.redirect(flask.url_for('welcome'))
+    return flask.redirect(flask.url_for('pages.welcome'))
 
   form = forms.UserActivateForm(obj=user_db)
   if form.validate_on_submit():

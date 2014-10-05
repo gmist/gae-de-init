@@ -7,6 +7,7 @@ from apps import auth
 from apps.auth import helpers
 from core import task
 from core import util
+import config
 import forms
 import models
 
@@ -84,12 +85,12 @@ def verify_email(token):
   user_db = auth.current_user_db()
   if user_db.token != token:
     flask.flash('That link is either invalid or expired.', category='danger')
-    return flask.redirect(flask.url_for('user.profile'))
+    return flask.redirect(flask.url_for('user.profile_update'))
   user_db.verified = True
   user_db.token = util.uuid()
   user_db.put()
   flask.flash('Hooray! Your email is now verified.', category='success')
-  return flask.redirect(flask.url_for('user.profile'))
+  return flask.redirect(flask.url_for('user.profile_update'))
 
 
 @bp.route('/merge/', methods=['GET', 'POST'])
@@ -166,9 +167,23 @@ def merge_user_dbs(user_db, deprecated_keys):
   ndb.put_multi(deprecated_dbs)
 
 
-@bp.route('/profile/', methods=['GET', 'POST'])
+@bp.route('/profile/')
 @auth.login_required
 def profile():
+  user_db = auth.current_user_db()
+  return flask.render_template(
+      'user/profile/index.html',
+      title=user_db.name,
+      html_class='profile-view',
+      user_db=user_db,
+      has_json=True,
+      api_url=flask.url_for('api.user', key=user_db.key.urlsafe()),
+    )
+
+
+@bp.route('/profile/update/', methods=['GET', 'POST'])
+@auth.login_required
+def profile_update():
   user_db = auth.current_user_db()
   form = forms.ProfileUpdateForm(obj=user_db)
 
@@ -176,6 +191,34 @@ def profile():
     email = form.email.data
     if email and not user_db.is_email_available(email, user_db.key):
       form.email.errors.append('This email is already taken.')
+
+    if not form.errors:
+      send_verification = not user_db.token or user_db.email != email
+      form.populate_obj(user_db)
+      if send_verification:
+        user_db.verified = False
+        task.verify_email_notification(user_db)
+      user_db.put()
+      return flask.redirect(flask.url_for('pages.welcome'))
+
+  return flask.render_template(
+      'user/profile/update.html',
+      title=user_db.name,
+      html_class='profile',
+      form=form,
+      user_db=user_db,
+    )
+
+
+@bp.route('/profile/password/', methods=['GET', 'POST'])
+@auth.login_required
+def profile_password():
+  if not config.CONFIG_DB.has_email_authentication:
+    flask.abort(418)
+  user_db = auth.current_user_db()
+  form = forms.ProfilePasswordForm(obj=user_db)
+
+  if form.validate_on_submit():
     errors = False
     old_password = form.old_password.data
     new_password = form.new_password.data
@@ -193,19 +236,13 @@ def profile():
         flask.flash('Your password has been changed.', category='success')
 
     if not (form.errors or errors):
-      send_verification = not user_db.token or user_db.email != email
-      form.populate_obj(user_db)
-      if send_verification:
-        user_db.verified = False
-        task.verify_email_notification(user_db)
       user_db.put()
-      return flask.redirect(flask.url_for('pages.welcome'))
+      return flask.redirect(flask.url_for('user.profile'))
 
   return flask.render_template(
-      'user/profile.html',
+      'user/profile/password.html',
       title=user_db.name,
-      html_class='profile',
+      html_class='profile-password',
       form=form,
       user_db=user_db,
-      api_url=flask.url_for('api.user', key=user_db.key.urlsafe()),
     )
