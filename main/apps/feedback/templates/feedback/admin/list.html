@@ -8,9 +8,7 @@
 # block content
   <div class="page-header">
     <h1>
-      <small>
-        <a href="{{url_for('admin.index')}}" class="text-muted" title="Back to admin page"><i class="fa fa-fw fa-chevron-left"></i></a>
-      </small>
+      {{utils.back_link('back to user admin page', 'admin.index')}}
       {{title}}
     </h1>
   </div>
