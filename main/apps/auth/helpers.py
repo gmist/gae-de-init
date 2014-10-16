@@ -10,6 +10,7 @@ import unidecode
 
 from app import app
 from apps.auth.models import FlaskUser, AuthProviders
+from core import cache
 from apps.user import models as u_models
 from core import task
 from core import util
@@ -174,3 +175,10 @@ def password_hash(user_db, password):
   m.update(password.encode('utf-8'))
   m.update(config.CONFIG_DB.salt)
   return m.hexdigest()
+
+
+def form_with_recaptcha(form):
+  should_have_recaptcha = cache.get_auth_attempt() >= config.RECAPTCHA_LIMIT
+  if not (should_have_recaptcha and config.CONFIG_DB.has_recaptcha):
+    del form.recaptcha
+  return form

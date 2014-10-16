@@ -59,54 +59,51 @@ def admin_index():
     )
 
 
-@bp.route('/signup/', methods=['GET', 'POST'], endpoint='signup')
 @bp.route('/signin/', methods=['GET', 'POST'], endpoint='signin')
 def signin():
   next_url = util.get_next_url()
-
-  auth_type = 'open'
-  if config.CONFIG_DB.has_email_authentication:
-    auth_type = 'signin'
-    if flask.url_for('auth.signup') in flask.request.path:
-      auth_type = 'signup'
-
   form = None
-  hide_recaptcha = cache.get_auth_attempt() < config.RECAPTCHA_LIMIT
-
- # --------------
-  # Sign in stuff
-  # --------------
-  if auth_type == 'signin':
-    form = forms.SignInForm()
-    if hide_recaptcha or not config.CONFIG_DB.has_recaptcha:
-      del form.recaptcha
+  if config.CONFIG_DB.has_email_authentication:
+    form = helpers.form_with_recaptcha(forms.SignInForm())
     helpers.save_request_params()
     if form.validate_on_submit():
       result = helpers.retrieve_user_from_email(
-          form.email.data, form.password.data
-        )
+          form.email.data, form.password.data)
       if result:
         cache.reset_auth_attempt()
         return helpers.signin_user_db(result)
       if result is None:
         form.email.errors.append('Email or Password do not match')
       if result is False:
-        return flask.redirect(flask.url_for('pages.welcome'))
+        return flask.redirect(flask.url_for('welcome'))
     if not form.errors:
       form.next_url.data = next_url
 
-  # --------------
-  # Sign up stuff
-  # --------------
-  if auth_type == 'signup':
-    form = forms.SignUpForm()
-    if hide_recaptcha or not config.CONFIG_DB.has_recaptcha:
-      del form.recaptcha
+  if form and form.errors:
+    cache.bump_auth_attempt()
+
+  return flask.render_template(
+      'auth/auth.html',
+      title='Sign in',
+      html_class='auth',
+      auth_providers=get_auth_providers(next_url),
+      next_url=next_url,
+      form=form,
+      form_type='signin' if config.CONFIG_DB.has_email_authentication else '',
+    )
+
+
+@bp.route('/signup/', methods=['GET', 'POST'], endpoint='signup')
+def singup():
+  next_url = util.get_next_url()
+  form = None
+  if config.CONFIG_DB.has_email_authentication:
+    form = helpers.form_with_recaptcha(forms.SignUpForm())
     helpers.save_request_params()
     if form.validate_on_submit():
       user_db = u_models.User.get_by('email', form.email.data)
       if user_db:
-        form.email.errors.append('This email is already taken.')
+        form.email.errors.append(u'This email is already taken.')
 
       if not form.errors:
         user_db = helpers.create_user_db(
@@ -123,24 +120,14 @@ def signin():
   if form and form.errors:
     cache.bump_auth_attempt()
 
-  auth_db = models.AuthProviders.get_master_db()
-  auth_providers = []
-  for name, provider in auth.PROVIDERS_CONFIG.iteritems():
-    for field in provider.get('fields', {}).iterkeys():
-      if not hasattr(auth_db, field) or not getattr(auth_db, field):
-        break
-    else:
-      provider['signin_url'] = flask.url_for('auth.p.%s.signin' % name, next=next_url)
-      auth_providers.append(provider)
-
+  title = 'Sign up' if config.CONFIG_DB.has_email_authentication else 'Sign in'
   return flask.render_template(
-    'auth/auth.html',
-      title='Sign up' if auth_type == 'signup' else 'Sign in',
-      html_class='auth %s' % auth_type,
-      auth_providers=sorted(auth_providers, key=lambda x: x.get('name')),
+      'auth/auth.html',
+      title=title,
+      html_class='auth',
       next_url=next_url,
       form=form,
-      auth_type=auth_type,
+      auth_providers=get_auth_providers(next_url),
     )
 
 
@@ -156,10 +143,8 @@ def user_forgot(token=None):
   if not config.CONFIG_DB.has_email_authentication:
     flask.abort(418)
 
-  form = forms.UserForgotForm(obj=auth.current_user_db())
-  hide_recaptcha = cache.get_auth_attempt() < config.RECAPTCHA_LIMIT
-  if hide_recaptcha or not config.CONFIG_DB.has_recaptcha:
-    del form.recaptcha
+  form = helpers.form_with_recaptcha(
+      forms.UserForgotForm(obj=auth.current_user_db()))
   if form.validate_on_submit():
     cache.bump_auth_attempt()
     email = form.email.data
@@ -251,3 +236,16 @@ def user_activate(token):
       form=form,
     )
 
+
+def get_auth_providers(next_url):
+  auth_db = models.AuthProviders.get_master_db()
+  auth_providers = []
+  for name, provider in auth.PROVIDERS_CONFIG.iteritems():
+    for field in provider.get('fields', {}).iterkeys():
+      if not hasattr(auth_db, field) or not getattr(auth_db, field):
+        break
+    else:
+      provider['signin_url'] = flask.url_for(
+        'auth.p.%s.signin' % name, next=next_url)
+      auth_providers.append(provider)
+  return sorted(auth_providers, key=lambda x: x.get('name'))
