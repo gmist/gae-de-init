@@ -3,6 +3,7 @@ import flask
 
 from apps.auth import helpers
 from apps.user import models
+from core import util
 from .import CONFIG
 
 
@@ -28,21 +29,11 @@ provider.pre_request = change_linkedin_query
 def authorized():
   response = provider.authorized_response()
   if response is None:
-    return 'Access denied: error=%s error_description=%s' % (
-        flask.request.args['error'],
-        flask.request.args['error_description'],
-      )
+    flask.flash(u'You denied the request to sign in.')
+    return flask.redirect(util.get_next_url())
   flask.session['access_token'] = (response['access_token'], '')
-  fields = 'id,first-name,last-name,email-address'
-  profile_url = '%speople/~:(%s)' % (
-      provider.base_url, fields,
-    )
-  result = provider.get(profile_url)
-  if result.status != 200:
-    return 'Unknown error: status=%s message=%s' % (
-        result.data['status'], result.data['message'],
-      )
-  user_db = retrieve_user_from_linkedin(result.data)
+  me = provider.get('people/~:(id,first-name,last-name,email-address)')
+  user_db = retrieve_user_from_linkedin(me.data)
   return helpers.signin_user_db(user_db)
 
 
@@ -61,15 +52,14 @@ def retrieve_user_from_linkedin(response):
   user_db = models.User.get_by('auth_ids', auth_id)
   if user_db:
     return user_db
-  first_name = response.get('firstName', '')
-  last_name = response.get('lastName', '')
-  full_name = ' '.join([first_name, last_name]).strip()
+  names = [response.get('firstName', ''), response.get('lastName', '')]
+  name = ' '.join(names).strip()
   email = response.get('emailAddress', '')
   return helpers.create_user_db(
       auth_id=auth_id,
-      name=full_name,
-      username=email or full_name,
+      name=name,
+      username=email or name,
       email=email,
-      verified=bool(email)
+      verified=bool(email),
     )
 
